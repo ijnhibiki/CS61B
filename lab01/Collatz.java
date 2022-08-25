@@ -6,7 +6,13 @@ public class Collatz {
     /** Returns the nextNumber in a Collatz sequence. */
     public static int nextNumber(int n) {
         // TODO: Fill in this method.
-        return 1;
+        if (n % 2 == 0) {
+            return n / 2;
+        } else if (n % 2 == 1) {
+            return 3 * n + 1;
+        }
+            return 1;
+
     }
 
     public static void main(String[] args) {
