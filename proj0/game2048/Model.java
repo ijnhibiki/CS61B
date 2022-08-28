@@ -120,26 +120,30 @@ public class Model extends Observable {
         if(side != Side.NORTH){
             _board.setViewingPerspective(side);
         }
-        for(int row = 0; row < _board.size(); row +=1){
+        for(int col = 0; col < size(); col +=1){
             boolean[] merged = new boolean[]{false, false, false, false};
-            for(int col = _board.size() -2; col >= 0; col -=1){
-                Tile t = _board.tile(row, col);
-                if(_board.tile(row, col) != null){
-                    for(int counter = col + 1; counter < _board.size(); counter +=1){
-                        if(counter == _board.size()-1 && _board.tile(row, counter) == null){
-                            _board.move(row, counter, t);
+            for(int row = size() -2; row >= 0; row -=1){
+                if(_board.tile(col, row) != null){
+                    Tile t = _board.tile(col, row);
+                    for(int counter = row + 1; counter < size(); counter +=1){
+                        if(counter == _board.size()-1 && _board.tile(col, counter) == null){
+                            _board.move(col, counter, t);
                             setChanged();
-                        }else if(_board.tile(row, counter) != null&&t.value() == _board.tile(row, counter).value() && !merged[counter]){
-                            _board.move(row, counter, t);
+                            break;
+                        }else if(_board.tile(col, counter) != null&&t.value() == _board.tile(col, counter).value() && !merged[counter]){
+                            _board.move(col, counter, t);
                             merged[counter] = true;
-                            this._score += _board.tile(row, counter).value();
+                            this._score += _board.tile(col, counter).value();
                             setChanged();
-                        }else if(_board.tile(row, counter) != null&&t.value() != _board.tile(row, counter).value()){
-                            _board.move(row, counter-1, t);
+                            break;
+                        }else if(_board.tile(col, counter) != null&&t.value() != _board.tile(col, counter).value()){
+                            _board.move(col, counter-1, t);
                             setChanged();
-                        }else if(_board.tile(row, counter) != null&&t.value() == _board.tile(row, counter).value() && merged[counter]){
-                            _board.move(row, counter-1, t);
+                            break;
+                        }else if(_board.tile(col, counter) != null&&t.value() == _board.tile(col, counter).value() && merged[counter]){
+                            _board.move(col, counter-1, t);
                             setChanged();
+                            break;
                         }
                     }
                 }
