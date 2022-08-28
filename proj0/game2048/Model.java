@@ -117,7 +117,35 @@ public class Model extends Observable {
      */
     public void tilt(Side side) {
         // TODO: Fill in this function.
-
+        if(side != Side.NORTH){
+            _board.setViewingPerspective(side);
+        }
+        for(int row = 0; row < _board.size(); row +=1){
+            boolean[] merged = new boolean[]{false, false, false, false};
+            for(int col = _board.size() -2; col >= 0; col -=1){
+                Tile t = _board.tile(row, col);
+                if(_board.tile(row, col) != null){
+                    for(int counter = col + 1; counter < _board.size(); counter +=1){
+                        if(counter == _board.size()-1 && _board.tile(row, counter) == null){
+                            _board.move(row, counter, t);
+                            setChanged();
+                        }else if(_board.tile(row, counter) != null&&t.value() == _board.tile(row, counter).value() && !merged[counter]){
+                            _board.move(row, counter, t);
+                            merged[counter] = true;
+                            this._score += _board.tile(row, counter).value();
+                            setChanged();
+                        }else if(_board.tile(row, counter) != null&&t.value() != _board.tile(row, counter).value()){
+                            _board.move(row, counter-1, t);
+                            setChanged();
+                        }else if(_board.tile(row, counter) != null&&t.value() == _board.tile(row, counter).value() && merged[counter]){
+                            _board.move(row, counter-1, t);
+                            setChanged();
+                        }
+                    }
+                }
+            }
+        }
+        _board.setViewingPerspective(Side.NORTH);
         checkGameOver();
     }
 
@@ -138,6 +166,13 @@ public class Model extends Observable {
      */
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
+        for(int row = 0; row < b.size(); row +=1){
+            for(int col = 0; col < b.size(); col += 1){
+                if(b.tile(row, col) == null){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -148,6 +183,15 @@ public class Model extends Observable {
      */
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
+        for(int row = 0; row < b.size(); row +=1){
+            for(int col = 0; col < b.size(); col +=1){
+                if(b.tile(row, col) != null){
+                    if(b.tile(row, col).value() == MAX_PIECE){
+                        return true;
+                    }
+                }
+            }
+        }
         return false;
     }
 
@@ -159,6 +203,30 @@ public class Model extends Observable {
      */
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
+        if(emptySpaceExists(b)){
+            return true;
+        }
+        for(int row = 0; row < b.size(); row +=1){
+                    for(int col = 0; col < b.size(); col +=1){
+                        if(row-1 >= 0){
+                            if(b.tile(row - 1, col).value() == b.tile(row, col).value()){
+                                return true;
+                            }
+                        }if(row+1 < b.size()){
+                            if(b.tile(row + 1, col).value() == b.tile(row, col).value()){
+                                return true;
+                            }
+                        }if(col-1 >=0){
+                            if(b.tile(row, col -1).value() == b.tile(row, col).value()){
+                                return true;
+                            }
+                        }if(col+1 < b.size()){
+                            if(b.tile(row, col + 1).value() == b.tile(row, col).value()){
+                                return true;
+                            }
+                        }
+                    }
+                }
         return false;
     }
 
