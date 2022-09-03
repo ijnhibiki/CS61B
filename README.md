@@ -1,2 +1,2 @@
-# fa22-s303
-all my work in CS61B fa 2022
+# CS61B
+The repo is for fall 2022 CS61A @ Grinnell College
