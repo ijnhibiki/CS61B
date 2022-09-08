@@ -22,21 +22,14 @@ public class LinkedListDeque<T> {
 
     public LinkedListDeque() {
         sentinel = new Deque(null, null, null);
-        sentinel.next = sentinel.prev;
         size = 0;
-    }
-
-    public LinkedListDeque(T item) {
-        sentinel = new Deque(null,null, null);
-        sentinel.next = new Deque(null,item, null);
-        size = 1;
     }
 
 
 
 
     public void addFirst(T item) {
-        sentinel.next = new Deque(null, item, sentinel.next);
+        sentinel.next = new Deque(sentinel.prev, item, sentinel.next);
         size = size +1;
     }
 
@@ -77,6 +70,7 @@ public class LinkedListDeque<T> {
         /* Creates a list of one integer, namely 10 */
         LinkedListDeque <Integer> L = new LinkedListDeque<Integer>();
         L.addFirst(20);
+        L.addFirst(30);
         System.out.println(L.size());
     }
 }
