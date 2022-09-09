@@ -1,6 +1,5 @@
 package deque;
 
-
 public class LinkedListDeque<T> {
     private class Deque {
         private Deque next;
@@ -59,7 +58,7 @@ public class LinkedListDeque<T> {
         System.out.print("\n");
     }
 
-    public T removeFirst(){
+    public T removeFirst() {
         if (isEmpty()) {
             return null;
         }
@@ -132,5 +131,4 @@ public class LinkedListDeque<T> {
         }
         return true;
     }
-
 }
