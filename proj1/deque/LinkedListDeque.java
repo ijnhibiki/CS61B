@@ -3,9 +3,9 @@ package deque;
 
 public class LinkedListDeque<T> {
     private class Deque {
-        public Deque next;
-        public Deque prev;
-        public T item;
+        private Deque next;
+        private Deque prev;
+        private T item;
 
         public Deque(Deque p, T i, Deque n) {
             prev = p;
@@ -31,16 +31,16 @@ public class LinkedListDeque<T> {
     public void addFirst(T item) {
         sentinel.next = new Deque(sentinel, item, sentinel.next);
         sentinel.next.next.prev = sentinel.next;
-        size = size +1;
+        size = size + 1;
     }
 
-    public void addLast(T item){
+    public void addLast(T item) {
         sentinel.prev.next = new Deque(sentinel.prev, item, sentinel);
         sentinel.prev = sentinel.prev.next;
         size = size + 1;
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         if (sentinel.next.item == null) {
             return true;
         }
@@ -52,8 +52,8 @@ public class LinkedListDeque<T> {
         return sentinel.item;
     }
 
-    public void printDeque(){
-        for (int counter = 0; counter < size; counter +=1) {
+    public void printDeque() {
+        for (int counter = 0; counter < size; counter += 1) {
             System.out.print(get(counter) + " ");
         }
         System.out.print("\n");
@@ -72,7 +72,7 @@ public class LinkedListDeque<T> {
         return first;
     }
 
-    public T removeLast(){
+    public T removeLast() {
         if (isEmpty()) {
             return null;
         }
@@ -85,27 +85,16 @@ public class LinkedListDeque<T> {
         return last;
     }
 
-    public T get(int index){
-        if (index >= size){
+    public T get(int index) {
+        if (index >= size) {
             return null;
         }
         Deque p = sentinel.next;
-        while (index > 0){
+        while (index > 0) {
             p = p.next;
             index -= 1;
         }
         return p.item;
-
-        /** while (index > 0) {
-            sentinel.next = sentinel.next.next;
-            index -= 1;
-        }
-        T result = sentinel.next.item;
-        while (index < counter) {
-            sentinel.next = sentinel.next.prev;
-            index += 1;
-        }
-        return result; */
     }
     public int size() {
         return size;
