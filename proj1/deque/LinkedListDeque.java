@@ -54,8 +54,7 @@ public class LinkedListDeque<T> {
 
     public void printDeque(){
         for (int counter = 0; counter < size; counter +=1) {
-            System.out.print(sentinel.next.item + " ");
-            sentinel.next = sentinel.next.next;
+            System.out.print(get(counter) + " ");
         }
         System.out.print("\n");
     }
@@ -87,6 +86,7 @@ public class LinkedListDeque<T> {
     }
 
     public T get(int index){
+        int counter = index;
         if (index >= size){
             return null;
         }
@@ -94,9 +94,24 @@ public class LinkedListDeque<T> {
             sentinel.next = sentinel.next.next;
             index -= 1;
         }
-        return sentinel.next.item;
+        T result = sentinel.next.item;
+        while (index < counter) {
+            sentinel.next = sentinel.next.prev;
+        }
+        return result;
     }
     public int size() {
         return size;
     }
+    public T getRecursive(int index) {
+        if (index == 0) {
+            return sentinel.next.item;
+        }
+        return getRecursive(1);
+    }
+
+    public boolean equals(Object o) {
+        return true;
+    }
+
 }
