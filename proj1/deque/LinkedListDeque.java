@@ -86,19 +86,26 @@ public class LinkedListDeque<T> {
     }
 
     public T get(int index){
-        int counter = index;
         if (index >= size){
             return null;
         }
-        while (index > 0) {
+        Deque p = sentinel.next;
+        while (index > 0){
+            p = p.next;
+            index -= 1;
+        }
+        return p.item;
+
+        /** while (index > 0) {
             sentinel.next = sentinel.next.next;
             index -= 1;
         }
         T result = sentinel.next.item;
         while (index < counter) {
             sentinel.next = sentinel.next.prev;
+            index += 1;
         }
-        return result;
+        return result; */
     }
     public int size() {
         return size;
