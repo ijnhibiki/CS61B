@@ -22,55 +22,81 @@ public class LinkedListDeque<T> {
 
     public LinkedListDeque() {
         sentinel = new Deque(null, null, null);
+        sentinel.next = sentinel;
+        sentinel.prev = sentinel;
         size = 0;
     }
 
 
-
-
     public void addFirst(T item) {
-        sentinel.next = new Deque(sentinel.prev, item, sentinel.next);
+        sentinel.next = new Deque(sentinel, item, sentinel.next);
+        sentinel.next.next.prev = sentinel.next;
         size = size +1;
     }
 
     public void addLast(T item){
-        return;
+        sentinel.prev.next = new Deque(sentinel.prev, item, sentinel);
+        sentinel.prev = sentinel.prev.next;
+        size = size + 1;
     }
 
     public boolean isEmpty(){
-        return true;
+        if (sentinel.next.item == null) {
+            return true;
+        }
+        return false;
     }
 
 
     public T getFirst() {
-        return sentinel.next.item;
+        return sentinel.item;
     }
 
     public void printDeque(){
-        return;
+        for (int counter = 0; counter < size; counter +=1) {
+            System.out.print(sentinel.next.item + " ");
+            sentinel.next = sentinel.next.next;
+        }
+        System.out.print("\n");
     }
 
     public T removeFirst(){
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+        T first = sentinel.next.item;
+        sentinel.next = sentinel.next.next;
+        sentinel.next.prev.prev = null;
+        sentinel.next.prev.next = null;
+        sentinel.next.prev = sentinel;
+        size = size - 1;
+        return first;
     }
 
     public T removeLast(){
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+        T last = sentinel.prev.item;
+        sentinel.prev = sentinel.prev.prev;
+        sentinel.prev.next.next = null;
+        sentinel.prev.next.prev = null;
+        sentinel.prev.next = sentinel;
+        size = size - 1;
+        return last;
     }
 
     public T get(int index){
-        return null;
+        if (index >= size){
+            return null;
+        }
+        while (index > 0) {
+            sentinel.next = sentinel.next.next;
+            index -= 1;
+        }
+        return sentinel.next.item;
     }
     public int size() {
         return size;
-    }
-
-
-    public static void main(String[] args) {
-        /* Creates a list of one integer, namely 10 */
-        LinkedListDeque <Integer> L = new LinkedListDeque<Integer>();
-        L.addFirst(20);
-        L.addFirst(30);
-        System.out.println(L.size());
     }
 }
