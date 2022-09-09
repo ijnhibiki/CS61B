@@ -123,14 +123,23 @@ public class LinkedListDeque<T> {
     }
 
     public boolean equals(Object o) {
-        if (!(o instanceof LinkedListDeque)){
+        if (!(o instanceof LinkedListDeque)) {
             return false;
         } else if (o == null) {
             return false;
-        } else if (o == this) {
-            return true;
+        } else if (size != ((LinkedListDeque<?>) o).size) {
+            return false;
         }
-        return false;
+        Deque p1 = sentinel.next;
+        LinkedListDeque<?>.Deque p2 = ((LinkedListDeque<?>) o).sentinel.next;
+        for (int counter = 0; counter < size; counter += 1) {
+            if (p1.item != p2.item) {
+                return false;
+            }
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+        return true;
     }
 
 }
