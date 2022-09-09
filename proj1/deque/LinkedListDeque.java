@@ -111,14 +111,26 @@ public class LinkedListDeque<T> {
         return size;
     }
     public T getRecursive(int index) {
+        Deque p = sentinel.next;
+        return getRecursiveHelper(p, index);
+    }
+    private T getRecursiveHelper(Deque list, int index) {
         if (index == 0) {
-            return sentinel.next.item;
+            return list.item;
         }
-        return getRecursive(1);
+        return getRecursiveHelper(list.next, index - 1);
+
     }
 
     public boolean equals(Object o) {
-        return true;
+        if (!(o instanceof LinkedListDeque)){
+            return false;
+        } else if (o == null) {
+            return false;
+        } else if (o == this) {
+            return true;
+        }
+        return false;
     }
 
 }
