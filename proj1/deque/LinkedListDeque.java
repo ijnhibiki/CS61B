@@ -129,11 +129,13 @@ public class LinkedListDeque<T> {
             return false;
         } else if (size != ((LinkedListDeque<?>) o).size) {
             return false;
+        } else if (o == this) {
+            return true;
         }
         Deque p1 = sentinel.next;
         LinkedListDeque<?>.Deque p2 = ((LinkedListDeque<?>) o).sentinel.next;
         for (int counter = 0; counter < size; counter += 1) {
-            if (p1.item != p2.item) {
+            if (!(p1.item.equals(p2.item))) {
                 return false;
             }
             p1 = p1.next;
