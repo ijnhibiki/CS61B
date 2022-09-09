@@ -112,11 +112,13 @@ public class LinkedListDeque<T> {
     }
 
     public boolean equals(Object o) {
-        if (!(o instanceof LinkedListDeque)) {
+        if (o == null) {
             return false;
-        } else if (o == null) {
+        } if (!(o instanceof LinkedListDeque)) {
             return false;
-        } else if (size != ((LinkedListDeque<?>) o).size) {
+        }  
+        LinkedListDeque<T> a = (LinkedListDeque<T>) o;
+        if (size != ((LinkedListDeque<?>) o).size) {
             return false;
         } else if (o == this) {
             return true;
