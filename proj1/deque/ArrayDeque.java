@@ -10,22 +10,20 @@ public class ArrayDeque<T> {
     public ArrayDeque() {
         items = (T[]) new Object[8];
         size = 0;
-        nextFirst = 4;
-        nextLast = 5;
+        nextFirst = 0;
+        nextLast = 1;
     }
 
     private void resize(int capacity, int indicator) {
         if (indicator == 1) {
             int first = nextFirst;
             int last = nextLast;
-            T[] temparray = (T[]) new Object[capacity / 2];
-            System.arraycopy(items, first + 1, temparray, 0, size - first - 1);
-            System.arraycopy(items, 0, temparray, size - first - 1, last);
             T[] newarray = (T[]) new Object[capacity];
-            System.arraycopy(temparray, 0, newarray, 5, size);
+            System.arraycopy(items, first + 1, newarray, 0, size - first - 1);
+            System.arraycopy(items, 0, newarray, size - first - 1, last);
             items = newarray;
-            nextFirst = 4;
-            nextLast = 4 + size;
+            nextFirst = size;
+            nextLast = capacity - 1;
         }
     }
 

@@ -67,7 +67,6 @@ public class ArrayDequeTest {
         // should be empty
         assertFalse("lld1 should be empty after removal", lld1.isEmpty());
 
-        assertEquals(lld1.get(5), (Object) 20);
     }
     @Test
     public void Resize1Test() {
