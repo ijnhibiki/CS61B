@@ -117,7 +117,7 @@ public class ArrayDequeTest {
         for (int i = 0; i < 25; i++) {
             lld1.addFirst(i);
         }
-        assertEquals(lld1.get(0), (Object) 0);
+        assertEquals(lld1.get(0), (Object) 7);
     }
 
     @Test

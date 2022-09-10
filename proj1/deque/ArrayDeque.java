@@ -24,6 +24,9 @@ public class ArrayDeque<T> {
             nextLast = size;
             head = size;
         }
+        if (indicator == 2) {
+            //smaller
+        }
     }
 
 
