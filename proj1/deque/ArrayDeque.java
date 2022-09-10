@@ -5,13 +5,14 @@ public class ArrayDeque<T> {
     private T[] items;
     private int nextFirst;
     private int nextLast;
+    private int head = 7;
 
 
     public ArrayDeque() {
         items = (T[]) new Object[8];
         size = 0;
-        nextFirst = 0;
-        nextLast = 1;
+        nextFirst = 7;
+        nextLast = 0;
     }
 
     private void resize(int capacity, int indicator) {
@@ -19,8 +20,9 @@ public class ArrayDeque<T> {
             T[] newarray = (T[]) new Object[capacity];
             System.arraycopy(items, 0, newarray, 0, size);
             items = newarray;
-            nextFirst = size;
-            nextLast = size + 1;
+            nextFirst = capacity - 1;
+            nextLast = size;
+            head = size;
         }
     }
 
@@ -41,7 +43,7 @@ public class ArrayDeque<T> {
             resize(size * 2, 1);
         }
         if (nextLast == items.length && size < items.length) {
-            nextLast = 0;
+            nextLast = head;
         }
         items[nextLast] = item;
         size = size + 1;
@@ -73,18 +75,26 @@ public class ArrayDeque<T> {
     public T removeFirst() {
         int index = nextFirst + 1;
         if (index == items.length) {
-            index = 0;
+            index = head;
         }
-        if (get(index) == null) {
+        if (get(index) == null && size == 0) {
             return null;
+        }
+        nextFirst = nextFirst + 1;
+        if (size == 8) {
+            index = 0;
+            nextFirst = index;
+        }
+        if (get(index) == null && size != 0) {
+            index = size / 2;
+            nextFirst = index;
         }
         T firstvalue = get(index);
         items[index] = null;
-        size = size - 1;
-        nextFirst = nextFirst + 1;
         if (nextFirst == items.length) {
-            nextFirst = 0;
+            nextFirst = head;
         }
+        size = size - 1;
         return firstvalue;
     }
 

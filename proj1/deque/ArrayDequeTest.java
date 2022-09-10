@@ -119,4 +119,27 @@ public class ArrayDequeTest {
         }
         assertEquals(lld1.get(0), (Object) 0);
     }
+
+    @Test
+    public void bigLLDequeTest() {
+        ArrayDeque<Integer> lld1 = new ArrayDeque<>();
+        for (int i = 0; i < 10000; i++) {
+            lld1.addFirst(i);
+        }
+
+        for (double i = 9999; i >=0; i--) {
+            assertEquals("Should have the same value", i, (double) lld1.removeFirst(), 0.0);
+        }
+    }
+    @Test
+    public void bigLLDeque2Test() {
+        ArrayDeque<Integer> lld1 = new ArrayDeque<>();
+        for (int i = 0; i < 10000; i++) {
+            lld1.addLast(i);
+        }
+
+        for (double i = 9999; i >= 0; i--) {
+            assertEquals("Should have the same value", i, (double) lld1.removeLast(), 0.0);
+        }
+    }
 }
