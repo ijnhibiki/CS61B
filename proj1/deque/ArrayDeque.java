@@ -19,8 +19,9 @@ public class ArrayDeque<T> {
             int first = nextFirst;
             int last = nextLast;
             T[] newarray = (T[]) new Object[capacity];
-            System.arraycopy(items, first + 1, newarray, 0, size - first - 1);
-            System.arraycopy(items, 0, newarray, size - first - 1, last);
+            //System.arraycopy(items, first + 1, newarray, 0, size - first - 1);
+            //System.arraycopy(items, 0, newarray, size - first - 1, last);
+            System.arraycopy(items, 0, newarray, 0, size);
             items = newarray;
             nextFirst = size;
             nextLast = capacity - 1;

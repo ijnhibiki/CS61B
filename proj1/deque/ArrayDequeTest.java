@@ -109,4 +109,14 @@ public class ArrayDequeTest {
         }
         assertEquals(lld1.size(), 0);
     }
+    @Test
+    public void addgetTest() {
+        ArrayDeque<Integer> lld1 = new ArrayDeque<>();
+        // should be empty
+        assertTrue("lld1 should be empty upon initialization", lld1.isEmpty());
+        for (int i = 0; i < 25; i++) {
+            lld1.addFirst(i);
+        }
+        assertEquals(lld1.get(0), (Object) 0);
+    }
 }
