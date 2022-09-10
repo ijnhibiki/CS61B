@@ -129,7 +129,7 @@ public class ArrayDequeTest {
 
         for (double i = 9999; i >=0; i--) {
             assertEquals("Should have the same value", i, (double) lld1.removeFirst(), 0.0);
-        }
+            }
     }
     @Test
     public void bigLLDeque2Test() {

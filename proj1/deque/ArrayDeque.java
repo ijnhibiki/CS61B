@@ -25,7 +25,8 @@ public class ArrayDeque<T> {
             head = size;
         }
         if (indicator == 2) {
-            //smaller
+            T[] newarray = (T[]) new Object[capacity];
+            System.arraycopy(items, 0, newarray, 0, size);
         }
     }
 
@@ -98,6 +99,9 @@ public class ArrayDeque<T> {
             nextFirst = head;
         }
         size = size - 1;
+        if (size / (double)items.length < 0.25 && size >= 16) {
+            resize(items.length / 2, 2);
+        }
         return firstvalue;
     }
 
@@ -115,6 +119,9 @@ public class ArrayDeque<T> {
         nextLast = nextLast - 1;
         if (nextLast == -1) {
             nextLast = items.length - 1;
+        }
+        if (size / (double)items.length < 0.25 && size >= 16) {
+            resize(items.length / 2, 2);
         }
         return lastvalue;
     }
