@@ -5,7 +5,6 @@ public class ArrayDeque<T> {
     private T[] items;
     private int nextFirst;
     private int nextLast;
-    private int head = 7;
 
 
     public ArrayDeque() {
@@ -22,7 +21,6 @@ public class ArrayDeque<T> {
             items = newarray;
             nextFirst = capacity - 1;
             nextLast = size;
-            head = size;
         }
         if (indicator == 2) {
             T[] newarray = (T[]) new Object[capacity];
@@ -48,7 +46,7 @@ public class ArrayDeque<T> {
             resize(size * 2, 1);
         }
         if (nextLast == items.length && size < items.length) {
-            nextLast = head;
+            nextLast = size;
         }
         items[nextLast] = item;
         size = size + 1;
@@ -80,7 +78,7 @@ public class ArrayDeque<T> {
     public T removeFirst() {
         int index = nextFirst + 1;
         if (index == items.length) {
-            index = head;
+            index = size;
         }
         if (get(index) == null && size == 0) {
             return null;
@@ -97,7 +95,7 @@ public class ArrayDeque<T> {
         T firstvalue = get(index);
         items[index] = null;
         if (nextFirst == items.length) {
-            nextFirst = head;
+            nextFirst = size;
         }
         size = size - 1;
         if (size / (double) items.length < 0.25 && size >= 16) {
