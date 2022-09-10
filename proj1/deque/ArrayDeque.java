@@ -24,7 +24,7 @@ public class ArrayDeque<T> {
             System.arraycopy(items, 0, newarray, 0, size);
             items = newarray;
             nextFirst = size;
-            nextLast = capacity - 1;
+            nextLast = size + 1;
         }
     }
 
@@ -33,7 +33,7 @@ public class ArrayDeque<T> {
         if (size == items.length) {
             resize(size * 2, 1);
         }
-        if (nextFirst == -1 && size < items.length) {
+        if (nextFirst == -1 && size < items.length || get(nextFirst) != null) {
             nextFirst = items.length - 1;
         }
         items[nextFirst] = item;
