@@ -3,12 +3,12 @@ package deque;
 public class ArrayDeque<T> {
     private int size;
     private T[] items;
-    public int nextFirst;
-    public int nextLast;
+    private int nextFirst;
+    private int nextLast;
 
 
     public ArrayDeque() {
-        items = (T [] ) new Object[8];
+        items = (T[]) new Object[8];
         size = 0;
         nextFirst = 4;
         nextLast = 5;
@@ -18,17 +18,14 @@ public class ArrayDeque<T> {
         if (indicator == 1) {
             int first = nextFirst;
             int last = nextLast;
-            T[] TempArray = (T[]) new Object[capacity/2];
-            System.arraycopy(items, first + 1, TempArray, 0, size - first - 1);
-            System.arraycopy(items, 0, TempArray, size - first - 1, last);
-            T[] NewArray = (T[]) new Object[capacity];
-            System.arraycopy(TempArray, 0, NewArray, 5, size);
-            items = NewArray;
+            T[] temparray = (T[]) new Object[capacity / 2];
+            System.arraycopy(items, first + 1, temparray, 0, size - first - 1);
+            System.arraycopy(items, 0, temparray, size - first - 1, last);
+            T[] newarray = (T[]) new Object[capacity];
+            System.arraycopy(temparray, 0, newarray, 5, size);
+            items = newarray;
             nextFirst = 4;
             nextLast = 4 + size;
-        }
-        if (indicator == 2) {
-
         }
     }
 
@@ -69,7 +66,7 @@ public class ArrayDeque<T> {
 
     public void printDeque() {
         int index = nextFirst + 1;
-        for (int counter = 0; counter < size; counter ++) {
+        for (int counter = 0; counter < size; counter++) {
             if (index == items.length) {
                 index = 0;
             }
@@ -86,14 +83,14 @@ public class ArrayDeque<T> {
         if (get(index) == null) {
             return null;
         }
-        T FirstValue = get(index);
+        T firstvalue = get(index);
         items[index] = null;
         size = size - 1;
         nextFirst = nextFirst + 1;
         if (nextFirst == items.length) {
             nextFirst = 0;
         }
-        return FirstValue;
+        return firstvalue;
     }
 
     public T removeLast() {
@@ -104,14 +101,14 @@ public class ArrayDeque<T> {
         if (get(index) == null) {
             return null;
         }
-        T LastValue = get(index);
+        T lastvalue = get(index);
         items[index] = null;
         size = size - 1;
         nextLast = nextLast - 1;
         if (nextLast == -1) {
             nextLast = items.length - 1;
         }
-        return LastValue;
+        return lastvalue;
     }
 
     public T get(int index) {
