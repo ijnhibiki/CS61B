@@ -99,7 +99,7 @@ public class ArrayDeque<T> {
             nextFirst = head;
         }
         size = size - 1;
-        if (size / (double)items.length < 0.25 && size >= 16) {
+        if (size / (double) items.length < 0.25 && size >= 16) {
             resize(items.length / 2, 2);
         }
         return firstvalue;
@@ -120,7 +120,7 @@ public class ArrayDeque<T> {
         if (nextLast == -1) {
             nextLast = items.length - 1;
         }
-        if (size / (double)items.length < 0.25 && size >= 16) {
+        if (size / (double) items.length < 0.25 && size >= 16) {
             resize(items.length / 2, 2);
         }
         return lastvalue;
@@ -142,7 +142,7 @@ public class ArrayDeque<T> {
         }
         ArrayDeque<?> p2 = ((ArrayDeque<?>) o);
         for (int counter = 0; counter < items.length; counter += 1) {
-            if (items[counter] != null && !(items[counter].equals( p2.items [counter]))) {
+            if (items[counter] != null && !(items[counter].equals(p2.items[counter]))) {
                 return false;
             }
         }
