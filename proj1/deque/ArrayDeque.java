@@ -121,6 +121,21 @@ public class ArrayDeque<T> {
     }
 
     public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        } else if (!(o instanceof ArrayDeque<?>)) {
+            return false;
+        }  else if (size != ((ArrayDeque<?>) o).size) {
+            return false;
+        } else if (o == this) {
+            return true;
+        }
+        ArrayDeque<?> p2 = ((ArrayDeque<?>) o);
+        for (int counter = 0; counter < items.length; counter += 1) {
+            if (items[counter] != null && !(items[counter].equals( p2.items [counter]))) {
+                return false;
+            }
+        }
         return true;
     }
 }
