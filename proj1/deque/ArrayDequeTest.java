@@ -2,6 +2,7 @@ package deque;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import edu.princeton.cs.algs4.StdRandom;
 
 public class ArrayDequeTest {
 
@@ -166,5 +167,27 @@ public class ArrayDequeTest {
             lld2.addLast(i);
         }
         assertEquals(lld1.equals(lld2), true);
+    }
+    @Test
+    public void randomizedTest(){
+        AListNoResizing<Integer> L = new AListNoResizing<>();
+        ArrayDeque<Integer> M = new ArrayDeque<>();
+        int N = 5000;
+        for (int i = 0; i < N; i += 1) {
+            int operationNumber = StdRandom.uniform(0, 3);
+            if (operationNumber == 0) {
+                // addLast
+                int randVal = StdRandom.uniform(0, 100);
+                L.addLast(randVal);
+                M.addLast(randVal);
+            } else if (operationNumber == 1) {
+                // size
+                int size = L.size();
+                assertEquals(size, M.size());
+            } else if (operationNumber == 2 && L.size()> 0) {
+                assertEquals(L.getLast(), M.getLast());
+                assertEquals(L.removeLast(), M.removeLast());
+            }
+        }
     }
 }

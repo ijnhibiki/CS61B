@@ -126,6 +126,17 @@ public class ArrayDeque<T> {
         }
         return lastvalue;
     }
+    public T getLast() {
+        int index = nextLast - 1;
+        if (index == -1) {
+            index = items.length - 1;
+        }
+        if (get(index) == null) {
+            return null;
+        }
+        T lastvalue = get(index);
+        return lastvalue;
+    }
 
     public T get(int index) {
         return items[index];
