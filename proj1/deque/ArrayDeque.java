@@ -79,16 +79,38 @@ public class ArrayDeque<T> {
     }
 
     public T removeFirst() {
-        T FirstValue = get(0);
-        items[nextFirst + 1] = null;
+        int index = nextFirst + 1;
+        if (index == items.length) {
+            index = 0;
+        }
+        if (get(index) == null) {
+            return null;
+        }
+        T FirstValue = get(index);
+        items[index] = null;
         size = size - 1;
+        nextFirst = nextFirst + 1;
+        if (nextFirst == items.length) {
+            nextFirst = 0;
+        }
         return FirstValue;
     }
 
     public T removeLast() {
-        T LastValue = get(0);
-        items[nextLast - 1] = null;
+        int index = nextLast - 1;
+        if (index == -1) {
+            index = items.length - 1;
+        }
+        if (get(index) == null) {
+            return null;
+        }
+        T LastValue = get(index);
+        items[index] = null;
         size = size - 1;
+        nextLast = nextLast - 1;
+        if (nextLast == -1) {
+            nextLast = items.length - 1;
+        }
         return LastValue;
     }
 

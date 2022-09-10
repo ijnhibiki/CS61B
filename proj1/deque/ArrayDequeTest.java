@@ -81,4 +81,33 @@ public class ArrayDequeTest {
         }
         assertEquals(lld1.size(), 10);
     }
+    @Test
+    public void RemoveFirst() {
+
+        ArrayDeque<Integer> lld1 = new ArrayDeque<>();
+        // should be empty
+        assertTrue("lld1 should be empty upon initialization", lld1.isEmpty());
+        for (int i = 0; i < 7; i++) {
+            lld1.addFirst(i);
+        }
+        for (int i = 0; i < 7; i++) {
+            lld1.removeFirst();
+        }
+        assertEquals(lld1.size(), 0);
+    }
+
+    @Test
+    public void RemoveLast() {
+
+        ArrayDeque<Integer> lld1 = new ArrayDeque<>();
+        // should be empty
+        assertTrue("lld1 should be empty upon initialization", lld1.isEmpty());
+        for (int i = 0; i < 7; i++) {
+            lld1.addFirst(i);
+        }
+        for (int i = 0; i < 7; i++) {
+            lld1.removeLast();
+        }
+        assertEquals(lld1.size(), 0);
+    }
 }
