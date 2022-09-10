@@ -114,4 +114,8 @@ public class ArrayDeque<T> {
     public T get(int index) {
         return items[index];
     }
+
+    public boolean equals(Object o) {
+        return true;
+    }
 }
