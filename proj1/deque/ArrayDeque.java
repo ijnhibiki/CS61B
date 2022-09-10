@@ -26,7 +26,8 @@ public class ArrayDeque<T> {
         }
         if (indicator == 2) {
             T[] newarray = (T[]) new Object[capacity];
-            System.arraycopy(items, 0, newarray, 0, size);
+            System.arraycopy(items, 0, newarray, 0, capacity);
+            items = newarray;
         }
     }
 
