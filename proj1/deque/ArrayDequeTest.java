@@ -185,7 +185,6 @@ public class ArrayDequeTest {
                 int size = L.size();
                 assertEquals(size, M.size());
             } else if (operationNumber == 2 && L.size()> 0) {
-                assertEquals(L.getLast(), M.getLast());
                 assertEquals(L.removeLast(), M.removeLast());
             }
         }
