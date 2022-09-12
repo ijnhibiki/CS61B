@@ -4,6 +4,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import edu.princeton.cs.algs4.StdRandom;
 
+import java.util.Iterator;
+
 public class ArrayDequeTest {
 
     @Test
@@ -188,5 +190,18 @@ public class ArrayDequeTest {
                 assertEquals(L.removeLast(), M.removeLast());
             }
         }
+    }
+    @Test
+    public void iteratorTest() {
+        ArrayDeque<Integer> lld1 = new ArrayDeque<>();
+        for (int i = 0; i < 500; i++) {
+            lld1.addLast(i);
+        }
+        Iterator<Integer> seer
+                = lld1.iterator();
+        while (seer.hasNext()) {
+            System.out.println(seer.next());
+        }
+
     }
 }
