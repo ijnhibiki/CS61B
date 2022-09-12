@@ -1,6 +1,9 @@
 package deque;
 
 import org.junit.Test;
+
+import java.util.Iterator;
+
 import static org.junit.Assert.*;
 
 
@@ -193,5 +196,17 @@ public class LinkedListDequeTest {
         }
         lld1.addLast(344);
         lld1.printDeque();
+    }
+    @Test
+    public void iteratorTest() {
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<>();
+        for (int i = 0; i < 500; i++) {
+            lld1.addLast(i);
+        }
+        Iterator<Integer> seer
+                = lld1.iterator();
+        while (seer.hasNext()) {
+            System.out.println(seer.next());
+        }
     }
 }
