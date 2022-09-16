@@ -41,15 +41,6 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         size = size + 1;
     }
 
-    /* public boolean isEmpty() {
-        if (sentinel.next.item == null) {
-            return true;
-        }
-        return false;
-    } */
-
-
-
     public void printDeque() {
         for (int counter = 0; counter < size; counter += 1) {
             System.out.print(get(counter) + " ");
