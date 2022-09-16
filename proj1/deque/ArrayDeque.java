@@ -16,9 +16,10 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     private void resize(int capacity) {
+        int taillength = size - nextLast;
         T[] newarray = (T[]) new Object[capacity];
         System.arraycopy(items, 0, newarray, 0, nextLast);
-        System.arraycopy(items, nextFirst + 1, newarray, capacity - (size - nextLast), size - nextLast);
+        System.arraycopy(items, nextFirst + 1, newarray, capacity - taillength, taillength);
         items = newarray;
         nextFirst = capacity - (size - nextLast) - 1;
     }
