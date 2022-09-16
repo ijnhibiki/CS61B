@@ -36,20 +36,22 @@ public class ArrayDequeTest {
 
         assertTrue("A newly initialized LLDeque should be empty", lld1.isEmpty());
 
-       for (int i = 0; i < 7; i ++) {
+       for (int i = 0; i < 8; i ++) {
            lld1.addFirst(i);
        }
-       assertEquals(lld1.size(), 7);
+       assertEquals(lld1.size(), 8);
        System.out.println("Printing out deque: ");
        lld1.printDeque();
 
        ArrayDeque<Integer> lld2 = new ArrayDeque<>();
 
        assertTrue("A newly initialized LLDeque should be empty", lld2.isEmpty());
-       for (int i = 0; i < 7; i ++) {
+       for (int i = 0; i < 8; i ++) {
             lld2.addLast(i);
         }
-       assertEquals(lld2.size(), 7);
+        System.out.println("Printing out deque: ");
+        lld2.printDeque();
+       assertEquals(lld2.size(), 8);
     }
 
     @Test
@@ -69,6 +71,14 @@ public class ArrayDequeTest {
         lld1.removeFirst();
         // should be empty
         assertFalse("lld1 should be empty after removal", lld1.isEmpty());
+        ArrayDeque<Integer> lld2 = new ArrayDeque<>();
+        for (int i = 0; i < 8; i ++) {
+            lld2.addFirst(i);
+        }
+        assertEquals(lld2.removeFirst(), (Object)7);
+        assertEquals(lld2.removeFirst(), (Object)6);
+        assertEquals(lld2.removeFirst(), (Object)5);
+        assertEquals(lld2.removeFirst(), (Object)4);
 
     }
     @Test
@@ -89,10 +99,10 @@ public class ArrayDequeTest {
         ArrayDeque<Integer> lld1 = new ArrayDeque<>();
         // should be empty
         assertTrue("lld1 should be empty upon initialization", lld1.isEmpty());
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 8; i++) {
             lld1.addFirst(i);
         }
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 8; i++) {
             lld1.removeFirst();
         }
         assertEquals(lld1.size(), 0);
@@ -104,23 +114,33 @@ public class ArrayDequeTest {
         ArrayDeque<Integer> lld1 = new ArrayDeque<>();
         // should be empty
         assertTrue("lld1 should be empty upon initialization", lld1.isEmpty());
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 8; i++) {
             lld1.addFirst(i);
         }
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 8; i++) {
             lld1.removeLast();
         }
         assertEquals(lld1.size(), 0);
+        ArrayDeque<Integer> lld2 = new ArrayDeque<>();
+        for (int i = 0; i < 8; i ++) {
+            lld2.addLast(i);
+        }
+        assertEquals(lld2.removeFirst(), (Object)0);
+        assertEquals(lld2.removeFirst(), (Object)1);
+        assertEquals(lld2.removeFirst(), (Object)2);
+        assertEquals(lld2.removeFirst(), (Object)3);
     }
     @Test
     public void addgetTest() {
         ArrayDeque<Integer> lld1 = new ArrayDeque<>();
         // should be empty
         assertTrue("lld1 should be empty upon initialization", lld1.isEmpty());
-        for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < 8; i++) {
             lld1.addFirst(i);
         }
         assertEquals(lld1.get(0), (Object) 7);
+        assertEquals(lld1.get(1), (Object) 6);
+        assertEquals(lld1.get(7), (Object) 0);
     }
 
     @Test
@@ -137,11 +157,11 @@ public class ArrayDequeTest {
     @Test
     public void bigLLDeque2Test() {
         ArrayDeque<Integer> lld1 = new ArrayDeque<>();
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 100; i++) {
             lld1.addLast(i);
         }
 
-        for (double i = 9999; i >= 0; i--) {
+        for (double i = 99; i >= 0; i--) {
             assertEquals("Should have the same value", i, (double) lld1.removeLast(), 0.0);
         }
     }
