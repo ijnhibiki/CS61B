@@ -57,7 +57,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         for (int counter = 0; counter < size; counter++) {
             System.out.print(get(counter) + " ");
         }
-        System.out.print("\n");
+        System.out.println();
     }
 
     public T removeFirst() {
