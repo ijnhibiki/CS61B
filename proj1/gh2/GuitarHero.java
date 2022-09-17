@@ -14,29 +14,29 @@ public class GuitarHero {
             keyArray.addLast(stringSound);
         }
 
-    while (true) {
+        while (true) {
 
-        /* check if the user has typed a key; if so, process it */
-        if (StdDraw.hasNextKeyTyped()) {
-            char key = StdDraw.nextKeyTyped();
-            int index = keyboard.indexOf(key);
-            if (index >= 0 && index < 37) {
-                keyArray.get(index).pluck();
+            /* check if the user has typed a key; if so, process it */
+            if (StdDraw.hasNextKeyTyped()) {
+                char key = StdDraw.nextKeyTyped();
+                int index = keyboard.indexOf(key);
+                if (index >= 0 && index < 37) {
+                    keyArray.get(index).pluck();
+                }
+            }
+
+
+            double sample = 0.0;
+            for (int i = 0; i < keyboard.length(); i++) {
+                sample += keyArray.get(i).sample();
+            }
+
+
+            StdAudio.play(sample);
+            for (int i = 0; i < keyboard.length(); i++) {
+                keyArray.get(i).tic();
             }
         }
-
-
-        double sample = 0.0;
-        for (int i = 0; i < keyboard.length(); i++) {
-            sample += keyArray.get(i).sample();
-        }
-
-
-        StdAudio.play(sample);
-        for (int i = 0; i < keyboard.length(); i++) {
-            keyArray.get(i).tic();
-        }
-    }
 
     }
 }
