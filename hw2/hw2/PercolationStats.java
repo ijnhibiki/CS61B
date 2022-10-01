@@ -4,30 +4,30 @@ import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
-    double [] threshold;
+    double[] threshold;
     int trials;
     public PercolationStats(int N, int T, PercolationFactory pf) {
         this.threshold = new double[T];
         this.trials = T;
-        if (N <= 0 || T <= 0) {
+        if (N < 1  || T < 1) {
             throw new IllegalArgumentException("The input is illegal");
         }
 
-        for (int i = 0; i < T; i ++){
+        for (int i = 0; i < T; i++) {
             Percolation test = pf.make(N);
             while (!test.percolates()) {
                 int row = StdRandom.uniform(N);
                 int col = StdRandom.uniform(N);
                 test.open(row, col);
             }
-            threshold[i] = (double) test.opened / (N * N);
+            threshold[i] = ((double) test.numberOfOpenSites()) / (N * N);
         }
     }  // perform T independent experiments on an N-by-N grid
     public double mean() {
         double result = StdStats.mean(threshold);
         return result;
     }                                           // sample mean of percolation threshold
-    public double stddev(){
+    public double stddev() {
         double result = StdStats.stddev(threshold);
         return result;
     }                                         // sample standard deviation of percolation threshold
