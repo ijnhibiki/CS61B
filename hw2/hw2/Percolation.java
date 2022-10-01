@@ -44,7 +44,7 @@ public class Percolation {
                 checkset.union(currectc, size * size);
             }
             if (row == size - 1) {
-                    checkset.union(currectc, size * size + 1);
+                checkset.union(currectc, size * size + 1);
             }
         }
 
