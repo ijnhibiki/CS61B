@@ -6,6 +6,7 @@ public class Percolation {
     private boolean[][] percolation;
     private int size;
     private WeightedQuickUnionUF checkset;
+    private WeightedQuickUnionUF checkset2;
 
     private int opened = 0;
     public Percolation(int N) {
@@ -15,6 +16,7 @@ public class Percolation {
         percolation = new boolean[N][N];
         size = N;
         checkset = new WeightedQuickUnionUF(size * size + 2);
+        checkset2 = new WeightedQuickUnionUF(size * size + 1);
     }                // create N-by-N grid, with all sites initially blocked
     public void open(int row, int col) {
         if (row < 0 || col < 0 || row > size - 1 || col > size - 1) {
@@ -27,21 +29,26 @@ public class Percolation {
             if (row - 1 >= 0 && isOpen(row - 1, col)) {
                 int upc = xyTo1D((row - 1), col);
                 checkset.union(currectc, upc);
+                checkset2.union(currectc, upc);
             }
             if (row + 1 < size && isOpen(row + 1, col)) {
                 int downc = xyTo1D((row + 1), col);
                 checkset.union(currectc, downc);
+                checkset2.union(currectc, downc);
             }
             if (col - 1 >= 0 && isOpen(row, col - 1)) {
                 int leftc = xyTo1D(row, (col - 1));
                 checkset.union(currectc, leftc);
+                checkset2.union(currectc, leftc);
             }
             if (col + 1 < size && isOpen(row, col + 1)) {
                 int rightc = xyTo1D(row, (col + 1));
                 checkset.union(currectc, rightc);
+                checkset2.union(currectc, rightc);
             }
             if (row == 0) {
                 checkset.union(currectc, size * size);
+                checkset2.union(currectc, size * size);
             }
             if (row == size - 1) {
                 checkset.union(currectc, size * size + 1);
@@ -59,11 +66,10 @@ public class Percolation {
 
     public boolean isFull(int row, int col) {
         int oneDcoordinate = xyTo1D(row, col);
-        if (row == size - 1 && !checkset.connected(size * size, oneDcoordinate)) {
-            return false;
-        }
         if (checkset.connected(size * size, oneDcoordinate) && isOpen(row, col)) {
-            return true;
+            if (checkset2.connected(size * size, oneDcoordinate)) {
+                return true;
+            }
         }
         return false;
 
