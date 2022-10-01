@@ -4,14 +4,14 @@ import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
-    double[] threshold;
-    int trials;
+    private double[] threshold;
+    private int trials;
     public PercolationStats(int N, int T, PercolationFactory pf) {
-        this.threshold = new double[T];
-        this.trials = T;
-        if (N < 1  || T < 1) {
+        if (N <= 0 || T <= 0) {
             throw new IllegalArgumentException("The input is illegal");
         }
+        this.threshold = new double[T];
+        this.trials = T;
 
         for (int i = 0; i < T; i++) {
             Percolation test = pf.make(N);

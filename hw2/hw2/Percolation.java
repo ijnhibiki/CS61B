@@ -44,7 +44,15 @@ public class Percolation {
                 checkset.union(currectc, size * size);
             }
             if (row == size - 1) {
-                checkset.union(currectc, size * size + 1);
+                if (isFull(row - 1, col)) {
+                    checkset.union(currectc, size * size + 1);
+                }
+                if (col - 1 >= 0 && isFull(row, col - 1)){
+                    checkset.union(currectc, size * size + 1);
+                }
+                if (col + 1 < size && isFull(row, col + 1)){
+                    checkset.union(currectc, size * size + 1);
+                }
             }
         }
 
@@ -77,6 +85,16 @@ public class Percolation {
 
     private int xyTo1D(int r, int c) {
         return (r * size) + c;
+    }
+
+    public static void main(String[] args) {
+        Percolation test = new Percolation(3);
+        test.open(0, 2);
+        test.open(1, 2);
+        test.open(2, 2);
+        test.open(2, 0);
+        System.out.println(test.percolates());
+        System.out.println(test.isFull(2, 0));
     }
 
 }
