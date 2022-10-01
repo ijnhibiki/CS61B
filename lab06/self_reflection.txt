@@ -8,19 +8,19 @@ A:
 
 Q: What's something you felt proud of in your code, if anything?
 
-A:
+A: I managed to fix the array index part, which was mistakenly pointed to 0 instead of the correct index.
 
 Q: What's something that was particularly inelegant in your code, if anything?
 
-A:
+A: The equal part, I did not figure out the correct process to compare them.
 
 Q: What did you learn by talking to your partner about writing ArrayDeque?
 
-A:
+A: I do have a partner lol
 
 Q: What do you wish you would have known before writing ArrayDeque, if anything?
 
-A:
+A: 
 
 Q: If you wrote ArrayDeque again, what would you do differently, if anything?
 
@@ -36,15 +36,15 @@ A:
 
 Q: What's something you felt proud of in your code, if anything?
 
-A:
+A: I managed to setup the Linkedlist constructor with help from slides.
 
 Q: What's something that was particularly inelegant in your code, if anything?
 
-A:
+A: In the add and remove part, I think I simply connected and disconnected node for multiply times. Therefore, this part is very confusing.
 
 Q: What did you learn by talking to your partner about writing LinkedListDeque?
 
-A:
+A: I do have a partner lol
 
 Q: What do you wish you would have known before writing LinkedListDeque, if anything?
 
@@ -52,7 +52,7 @@ A:
 
 Q: If you wrote LinkedListDeque again, what would you do differently, if anything?
 
-A:
+A: 
 
 -----
 
@@ -60,4 +60,4 @@ Meta:
 
 Q: Did you like this design review process? Anything we should do differently next time?
 
-A: 
+A: I like the process, although I am not able to attend in person.
