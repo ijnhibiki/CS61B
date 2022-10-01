@@ -44,15 +44,7 @@ public class Percolation {
                 checkset.union(currectc, size * size);
             }
             if (row == size - 1) {
-                if (isFull(row - 1, col)) {
                     checkset.union(currectc, size * size + 1);
-                }
-                if (col - 1 >= 0 && isFull(row, col - 1)){
-                    checkset.union(currectc, size * size + 1);
-                }
-                if (col + 1 < size && isFull(row, col + 1)){
-                    checkset.union(currectc, size * size + 1);
-                }
             }
         }
 
@@ -67,6 +59,9 @@ public class Percolation {
 
     public boolean isFull(int row, int col) {
         int oneDcoordinate = xyTo1D(row, col);
+        if (row == size - 1 && !checkset.connected(size * size, oneDcoordinate)) {
+            return false;
+        }
         if (checkset.connected(size * size, oneDcoordinate) && isOpen(row, col)) {
             return true;
         }
