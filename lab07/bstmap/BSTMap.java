@@ -1,26 +1,31 @@
 package bstmap;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class BSTMap <K extends Comparable<K>, V>implements Map61B<K, V> {
+public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
     private class BSTNode {
         private K key;
         private V value;
         private BSTNode left, right;
 
+
+
         public BSTNode(K key, V value) {
             this.key = key;
             this.value = value;
         }
     }
+    private Set<K> set;
     private BSTNode root;
     private int size;
 
     public BSTMap() {
         root = null;
         size = 0;
+        set = new HashSet<K>();
     }
     public void clear() {
         root = null;
@@ -30,9 +35,9 @@ public class BSTMap <K extends Comparable<K>, V>implements Map61B<K, V> {
         if (key == null) {
             throw new IllegalArgumentException("argument to contains() is null");
         }
-        return Keyfinder(root, key);
+        return keyfinder(root, key);
     }
-    private boolean Keyfinder(BSTNode node, K key) {
+    private boolean keyfinder(BSTNode node, K key) {
         if (key == null) {
             throw new IllegalArgumentException("calls get() with a null key");
         }
@@ -53,7 +58,7 @@ public class BSTMap <K extends Comparable<K>, V>implements Map61B<K, V> {
         return get(root, key);
     }
 
-    private V get (BSTNode node, K key) {
+    private V get(BSTNode node, K key) {
         if (key == null) {
             throw new IllegalArgumentException("calls get() with a null key");
         }
@@ -80,11 +85,12 @@ public class BSTMap <K extends Comparable<K>, V>implements Map61B<K, V> {
         }
 
         root = put(root, key, value);
+        set.add(key);
         size = size + 1;
 
     }
 
-    private BSTNode put (BSTNode node, K key, V value) {
+    private BSTNode put(BSTNode node, K key, V value) {
         if (node == null) {
             return new BSTNode(key, value);
         }
@@ -103,7 +109,7 @@ public class BSTMap <K extends Comparable<K>, V>implements Map61B<K, V> {
     }
 
     public Set<K> keySet() {
-        throw new UnsupportedOperationException();
+        return set;
     }
 
     public V remove(K key) {
@@ -128,28 +134,5 @@ public class BSTMap <K extends Comparable<K>, V>implements Map61B<K, V> {
         }
     }
 
-    public void printInOrder() {
-        if(root==null){
-            System.out.println(" None ");
-        }
-        else printInOrder(root);
-    }
-    private void printInOrder(BSTNode n){
-        if(n.right==null&&n.left==null){
-            System.out.println(" "+n.key.toString()+" ");
-        }
-        else if(n.right==null&&n.left!=null){
-            printInOrder(n.left);
-            System.out.println(" " + n.key.toString()+" ");
-        }
-        else if(n.right!=null&&n.left==null){
-            printInOrder(n.right);
-            System.out.println(" " + n.key.toString()+" ");
-        }
-        else{
-            printInOrder(n.left);
-            System.out.println(" " + n.key.toString()+" ");
-            printInOrder(n.right);
-        }
-    }
+
 }
