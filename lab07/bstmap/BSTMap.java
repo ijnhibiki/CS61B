@@ -10,9 +10,6 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         private K key;
         private V value;
         private BSTNode left, right;
-
-
-
         public BSTNode(K key, V value) {
             this.key = key;
             this.value = value;
@@ -21,12 +18,12 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     private Set<K> set;
     private BSTNode root;
     private int size;
-
     public BSTMap() {
         root = null;
         size = 0;
-        set = new HashSet<K>();
+        set = new HashSet<>();
     }
+
     public void clear() {
         root = null;
         size = 0;
@@ -113,7 +110,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     }
 
     public V remove(K key) {
-        throw new UnsupportedOperationException();
+        
 
     }
 
@@ -125,14 +122,18 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         return new BSTMapIterator();
     }
     private class BSTMapIterator implements Iterator<K> {
+        private int wizPos;
+        private BSTMapIterator() {
+            wizPos = 0;
+        }
         public boolean hasNext() {
-            return true;
+            return wizPos < size;
         }
         public K next() {
-
             return null;
         }
     }
+
 
 
 }
