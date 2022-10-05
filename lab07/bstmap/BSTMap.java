@@ -127,4 +127,29 @@ public class BSTMap <K extends Comparable<K>, V>implements Map61B<K, V> {
             return null;
         }
     }
+
+    public void printInOrder() {
+        if(root==null){
+            System.out.println(" None ");
+        }
+        else printInOrder(root);
+    }
+    private void printInOrder(BSTNode n){
+        if(n.right==null&&n.left==null){
+            System.out.println(" "+n.key.toString()+" ");
+        }
+        else if(n.right==null&&n.left!=null){
+            printInOrder(n.left);
+            System.out.println(" " + n.key.toString()+" ");
+        }
+        else if(n.right!=null&&n.left==null){
+            printInOrder(n.right);
+            System.out.println(" " + n.key.toString()+" ");
+        }
+        else{
+            printInOrder(n.left);
+            System.out.println(" " + n.key.toString()+" ");
+            printInOrder(n.right);
+        }
+    }
 }
