@@ -369,7 +369,7 @@ tramp
 # words
 
 # Project 2a things
-#proj2a/data
+proj2a/data
 
 # Capers Lab Things (fa22)
 !Makefile
