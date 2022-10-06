@@ -19,9 +19,6 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     private Set<K> set;
     private BSTNode root;
     private int size;
-    public boolean isEmpty() {
-        return size() == 0;
-    }
     public BSTMap() {
         root = null;
         size = 0;
