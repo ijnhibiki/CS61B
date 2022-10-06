@@ -393,3 +393,11 @@ tramp
 !byow/**/*.mp4
 !byow/**/*.gif
 !byow/**/*.wav
+proj2a/data/wordnet/hyponyms.txt
+proj2a/data/wordnet/hyponyms1000-subgraph.txt
+proj2a/data/wordnet/hyponyms11.txt
+proj2a/data/wordnet/hyponyms14.txt
+proj2a/data/wordnet/synsets.txt
+proj2a/data/wordnet/synsets1000-subgraph.txt
+proj2a/data/wordnet/synsets11.txt
+proj2a/data/wordnet/synsets14.txt
