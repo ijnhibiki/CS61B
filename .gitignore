@@ -368,6 +368,9 @@ tramp
 # Project 1B things
 # words
 
+# Project 2a things
+#proj2a/data
+
 # Capers Lab Things (fa22)
 !Makefile
 !lab6/testing/*
