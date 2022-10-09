@@ -8,15 +8,17 @@ import ngordnet.ngrams.TimeSeries;
 import java.util.List;
 
 public class HistoryTextHandler extends NgordnetQueryHandler {
+    private NGramMap map;
+    public HistoryTextHandler(NGramMap map) {
+        this.map = map;
+    }
     public String handle(NgordnetQuery q) {
         List<String> words = q.words();
         int startYear = q.startYear();
         int endYear = q.endYear();
         String response = "";
-        NGramMap ngm = new NGramMap("./data/ngrams/top_14377_words.csv",
-                "./data/ngrams/total_counts.csv");
         for (String word : words) {
-            TimeSeries newline = ngm.weightHistory(word, startYear, endYear);
+            TimeSeries newline = map.weightHistory(word, startYear, endYear);
             response += word;
             response += newline.toString() + "\n";
         }

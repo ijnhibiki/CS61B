@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryHandler extends NgordnetQueryHandler {
+    private NGramMap map;
+    public HistoryHandler(NGramMap map) {
+        this.map = map;
+    }
 
     public String handle(NgordnetQuery q) {
         List<String> words = q.words();
@@ -19,10 +23,9 @@ public class HistoryHandler extends NgordnetQueryHandler {
         ArrayList<TimeSeries> lts = new ArrayList<>();
         ArrayList<String> labels = new ArrayList<>();
 
-        NGramMap ngm = new NGramMap("./data/ngrams/top_14377_words.csv",
-                "./data/ngrams/total_counts.csv");
+
         for (String word : words) {
-            TimeSeries newline = ngm.weightHistory(word, startYear, endYear);
+            TimeSeries newline = map.weightHistory(word, startYear, endYear);
             labels.add(word);
             lts.add(newline);
         }
