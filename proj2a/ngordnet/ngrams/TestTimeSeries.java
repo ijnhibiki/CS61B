@@ -40,4 +40,22 @@ public class TestTimeSeries {
             assertEquals(expectedTotal.get(i), totalPopulation.data().get(i), 1E-10);
         }
     }
+
+    @Test
+    public void testFromSpec2() {
+        TimeSeries Population = new TimeSeries();
+        for (int i = 0; i < 1000; i ++) {
+            Population.put(i + 1000, i/1.0);
+        }
+        TimeSeries Population2 = new TimeSeries();
+        for (int i = 0; i < 1000; i ++) {
+            Population2.put(i + 1000, i/1.0);
+        }
+        TimeSeries totalPopulation = Population.plus(Population2);
+        List<Integer> expectedYears = new ArrayList<>();
+        for (int i = 0; i < 1000; i ++) {
+            expectedYears.add(i + 1000);
+        }
+        assertEquals(expectedYears, totalPopulation.years());
+    }
 } 
