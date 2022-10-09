@@ -5,7 +5,7 @@ import edu.princeton.cs.algs4.In;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Objects;
+
 
 
 /** An object that provides utility methods for making queries on the
@@ -24,7 +24,7 @@ public class NGramMap {
         In words = new In(wordsFilename);
         In counts = new In(countsFilename);
         ngrammaps = new HashMap<>();
-        TimeSeries ngrammap = new TimeSeries();
+        TimeSeries ngrammap;
         while (words.hasNextChar()) {
             String next = words.readLine();
             String[] newnext = next.split("\t");

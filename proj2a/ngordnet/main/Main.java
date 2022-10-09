@@ -16,7 +16,7 @@ public class Main {
         */
 
         hns.startUp();
-        hns.register("history", new DummyHistoryHandler());
-        hns.register("historytext", new DummyHistoryTextHandler());
+        hns.register("history", new HistoryHandler());
+        hns.register("historytext", new HistoryTextHandler());
     }
 }
