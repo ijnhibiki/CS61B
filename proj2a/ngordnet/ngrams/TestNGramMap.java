@@ -73,7 +73,7 @@ public class TestNGramMap {
     @Test
     public void testOnLargerFile() {
         // creates an NGramMap from a large dataset
-        NGramMap ngm = new NGramMap("./data/ngrams/short.csv",
+        NGramMap ngm = new NGramMap("./data/ngrams/top_49887_words.csv",
                 "./data/ngrams/total_counts.csv");
 
     }

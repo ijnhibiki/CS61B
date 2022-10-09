@@ -14,11 +14,11 @@ public class Main {
         NGramMap ngm = new NGramMap(wordFile, countFile);
 
         */
+        NGramMap map = new NGramMap("./data/ngrams/top_14377_words.csv",
+                "./data/ngrams/total_counts.csv");
 
         hns.startUp();
-        hns.register("history", new HistoryHandler(new NGramMap("./data/ngrams/top_14377_words.csv",
-                "./data/ngrams/total_counts.csv")));
-        hns.register("historytext", new HistoryTextHandler(new NGramMap("./data/ngrams/top_14377_words.csv",
-                "./data/ngrams/total_counts.csv")));
+        hns.register("history", new HistoryHandler(map));
+        hns.register("historytext", new HistoryTextHandler(map));
     }
 }

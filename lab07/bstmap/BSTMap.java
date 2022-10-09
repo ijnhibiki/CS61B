@@ -174,7 +174,16 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
 
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException();
+        if (key == null) {
+            throw new IllegalArgumentException("argument to contains() is null");
+        }
+        if (get(key) == value) {
+            V removed = get(key);
+            root = remove(root, key);
+            size = size - 1;
+            return removed;
+        }
+        return null;
     }
 
     public Iterator<K> iterator() {
