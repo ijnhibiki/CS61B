@@ -56,8 +56,7 @@ public class NGramMap {
      *  NGramMap. This is also known as a "defensive copy". */
     public TimeSeries countHistory(String word) {
 
-        TimeSeries history = ngrammaps.get(word);
-        return history;
+        return ngrammaps.get(word);
     }
 
     /** Provides the history of WORD between STARTYEAR and ENDYEAR, inclusive of both ends. The
@@ -65,21 +64,18 @@ public class NGramMap {
      *  changes made to the object returned by this function should not also affect the
      *  NGramMap. This is also known as a "defensive copy". */
     public TimeSeries countHistory(String word, int startYear, int endYear) {
-        TimeSeries history = new TimeSeries(ngrammaps.get(word), startYear, endYear);
-        return history;
+        return new TimeSeries(ngrammaps.get(word), startYear, endYear);
     }
 
     /** Returns a defensive copy of the total number of words recorded per year in all volumes. */
     public TimeSeries totalCountHistory() {
-        TimeSeries totalwords = ngrammaps.get("total");
-        return totalwords;
+        return ngrammaps.get("total");
     }
 
     /** Provides a TimeSeries containing the relative frequency per year of WORD compared to
      *  all words recorded in that year. */
     public TimeSeries weightHistory(String word) {
-        TimeSeries weightHistory = ngrammaps.get(word).dividedBy(totalCountHistory());
-        return weightHistory;
+        return ngrammaps.get(word).dividedBy(totalCountHistory());
     }
 
     /** Provides a TimeSeries containing the relative frequency per year of WORD between STARTYEAR

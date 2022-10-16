@@ -70,12 +70,5 @@ public class TestNGramMap {
         assertEquals(expectedFishPlusDogWeight1865, fishPlusDogWeight.get(1865), 1E-10);
     }
 
-    @Test
-    public void testOnLargerFile() {
-        // creates an NGramMap from a large dataset
-        NGramMap ngm = new NGramMap("./data/ngrams/top_49887_words.csv",
-                "./data/ngrams/total_counts.csv");
-
-    }
 
 }  
