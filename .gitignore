@@ -369,7 +369,7 @@ tramp
 # words
 
 # Project 2a things
-proj2a/data
+proj2a/data/*
 
 # Capers Lab Things (fa22)
 !Makefile
@@ -399,3 +399,6 @@ hyponyms.txt
 top_14377_words.csv
 top_49887_words.csv
 all_words.csv
+
+proj2b/data/wordnet/hyponyms1000-subgraph.txt
+*.txt
