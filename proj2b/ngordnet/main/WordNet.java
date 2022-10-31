@@ -12,14 +12,14 @@ public class WordNet {
     //wrapper for a graph
     private Graph graph;
 
-    public WordNet(String SynsetsFilename, String HyponymsFilename) {
+    public WordNet(String synsetFilename, String hyponymsFilename) {
         index_wordlist = new HashMap<>();
         word_indexlist = new HashMap<>();
-        In Synsets = new In(SynsetsFilename);
-        In Hyponyms = new In(HyponymsFilename);
+        In synsets = new In(synsetFilename);
+        In hyponyms = new In(hyponymsFilename);
         this.graph = new Graph();
-        while (Synsets.hasNextChar()) {
-            String next = Synsets.readLine();
+        while (synsets.hasNextChar()) {
+            String next = synsets.readLine();
             String[] newnext = next.split(",");
             int index = Integer.parseInt(newnext[0]);
             graph.addNode(index);
@@ -37,8 +37,8 @@ public class WordNet {
             }
             index_wordlist.put(index, reference);
         }
-        while (Hyponyms.hasNextChar()) {
-            String next = Hyponyms.readLine();
+        while (hyponyms.hasNextChar()) {
+            String next = hyponyms.readLine();
             String[] newnext = next.split(",");
             int index = Integer.parseInt(newnext[0]);
             for (int counter = 1; counter < newnext.length; counter++) {
