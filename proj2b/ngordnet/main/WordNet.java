@@ -7,13 +7,13 @@ import java.util.Map.Entry;
 import java.util.*;
 
 public class WordNet {
-    private final HashMap<Integer, List<String>> index_wordlist;
+    private final HashMap<Integer, List<String>> indexWordList;
     private final HashMap<String, List<Integer>> wordIndexList;
     //wrapper for a graph
     private final Graph graph;
 
     public WordNet(String synsetsFilename, String hyponymsFilename) {
-        index_wordlist = new HashMap<>();
+        indexWordList = new HashMap<>();
         wordIndexList = new HashMap<>();
         In synsets = new In(synsetsFilename);
         In hyponyms = new In(hyponymsFilename);
@@ -35,7 +35,7 @@ public class WordNet {
                     wordIndexList.get(definition).add(index);
                 }
             }
-            index_wordlist.put(index, reference);
+            indexWordList.put(index, reference);
         }
         while (hyponyms.hasNextChar()) {
             String next = hyponyms.readLine();
@@ -56,7 +56,7 @@ public class WordNet {
             for (Integer i : index) {
                 reference = graph.depthFirstTraversal(graph, i);
                 for (Integer j : reference) {
-                    result.addAll(index_wordlist.get(j));
+                    result.addAll(indexWordList.get(j));
                 }
             }
             return result;
@@ -68,7 +68,6 @@ public class WordNet {
         Set<String> result = new LinkedHashSet<>();
         Set<String> to_remove = new LinkedHashSet<>();
         for (String input : words) {
-
             Set<String> reference = new LinkedHashSet<>(hyponyms(input));
             if (!result.isEmpty()) {
                 for (String index: result) {
@@ -80,16 +79,17 @@ public class WordNet {
                 result.addAll(reference);
             }
         }
-        for (String remove: to_remove) {
-            result.remove(remove);
+        for (String remove_element: to_remove) {
+            result.remove(remove_element);
         }
         return result;
     }
 
     public ArrayList<String> khyponyms(Collection<String> words, int startYear, int endYear, int k, NGramMap ngm) {
         Set<String> result = new LinkedHashSet<>();
-        LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();
+        Map<String, Integer> sortedMap = new LinkedHashMap<>();
         ArrayList<Integer> list = new ArrayList<>();
+        int counter = 0;
         if (k == 0) {
             ArrayList<String> array = new ArrayList<>(hyponyms(words));
             Collections.sort(array);
@@ -114,7 +114,6 @@ public class WordNet {
                     }
                 }
             }
-            int counter = 0;
             for (String i : sortedMap.keySet()) {
                 if (counter < k) {
                     result.add(i);

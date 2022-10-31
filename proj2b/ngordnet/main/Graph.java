@@ -33,7 +33,7 @@ public class Graph {
         return edge;
     }
 
-    public int getVertix() {
+    public int getVertex() {
         return vertices;
     }
 
@@ -41,9 +41,9 @@ public class Graph {
         return new LinkedList<>(brackets.keySet());
     }
 
-    public List<Integer> neighbors(int vertix) {
-        if (brackets.containsKey(vertix)) {
-            return brackets.get(vertix);
+    public List<Integer> neighbors(int vertex) {
+        if (brackets.containsKey(vertex)) {
+            return brackets.get(vertex);
         }
         return null;
     }
