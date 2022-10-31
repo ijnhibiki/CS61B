@@ -15,9 +15,9 @@ public class Graph {
         this.vertices = 0;
     }
 
-    public void addEdge(Integer parent, Integer child) {
+    public void addEdge(Integer parent, Integer vertex) {
         if (brackets.containsKey(parent)) {
-            brackets.get(parent).add(child);
+            brackets.get(parent).add(vertex);
             edge += 1;
         }
     }

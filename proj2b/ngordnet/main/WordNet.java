@@ -18,6 +18,7 @@ public class WordNet {
         In synsets = new In(synsetsFilename);
         In hyponyms = new In(hyponymsFilename);
         this.graph = new Graph();
+
         while (synsets.hasNextChar()) {
             String next = synsets.readLine();
             String[] new_next = next.split(",");
@@ -59,9 +60,8 @@ public class WordNet {
                     result.addAll(indexWordList.get(j));
                 }
             }
-            return result;
         }
-        return null;
+        return result;
     }
 
     public Set<String> hyponyms(Collection<String> words) {
