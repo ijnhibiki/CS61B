@@ -7,7 +7,7 @@ public class Graph {
     private int edge;
     private int vertices;
     private Map<Integer, List<Integer>> brackets;
-    private LinkedList<Integer> child;
+    private LinkedList<Integer> neighbor;
     //Adjacency Matrix.
     public Graph () {
         this.brackets = new HashMap<>();
@@ -23,8 +23,8 @@ public class Graph {
     }
     public void addNode(Integer node) {
         if (!brackets.containsKey(node)) {
-            child = new LinkedList<>();
-            brackets.put(node, child);
+            neighbor = new LinkedList<>();
+            brackets.put(node, neighbor);
             vertices += 1;
         }
     }
