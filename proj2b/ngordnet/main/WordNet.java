@@ -7,42 +7,42 @@ import java.util.Map.Entry;
 import java.util.*;
 
 public class WordNet {
-    private HashMap<Integer, List<String>> index_wordlist;
-    private HashMap<String, List<Integer>> word_indexlist;
+    private final HashMap<Integer, List<String>> index_wordlist;
+    private final HashMap<String, List<Integer>> wordIndexList;
     //wrapper for a graph
-    private Graph graph;
+    private final Graph graph;
 
-    public WordNet(String synsetFilename, String hyponymsFilename) {
+    public WordNet(String synsetsFilename, String hyponymsFilename) {
         index_wordlist = new HashMap<>();
-        word_indexlist = new HashMap<>();
-        In synsets = new In(synsetFilename);
+        wordIndexList = new HashMap<>();
+        In synsets = new In(synsetsFilename);
         In hyponyms = new In(hyponymsFilename);
         this.graph = new Graph();
         while (synsets.hasNextChar()) {
             String next = synsets.readLine();
-            String[] newnext = next.split(",");
-            int index = Integer.parseInt(newnext[0]);
+            String[] new_next = next.split(",");
+            int index = Integer.parseInt(new_next[0]);
             graph.addNode(index);
-            String[] definitions = newnext[1].split(" ");
+            String[] definitions = new_next[1].split(" ");
             LinkedList<String> reference = new LinkedList<>();
             for (String definition : definitions) {
                 reference.add(definition);
-                if (!word_indexlist.containsKey(definition)) {
+                if (!wordIndexList.containsKey(definition)) {
                     LinkedList<Integer> index_reference = new LinkedList<>();
                     index_reference.add(index);
-                    word_indexlist.put(definition, index_reference);
+                    wordIndexList.put(definition, index_reference);
                 } else {
-                    word_indexlist.get(definition).add(index);
+                    wordIndexList.get(definition).add(index);
                 }
             }
             index_wordlist.put(index, reference);
         }
         while (hyponyms.hasNextChar()) {
             String next = hyponyms.readLine();
-            String[] newnext = next.split(",");
-            int index = Integer.parseInt(newnext[0]);
-            for (int counter = 1; counter < newnext.length; counter++) {
-                graph.addEdge(index, Integer.parseInt(newnext[counter]));
+            String[] new_next = next.split(",");
+            int index = Integer.parseInt(new_next[0]);
+            for (int counter = 1; counter < new_next.length; counter++) {
+                graph.addEdge(index, Integer.parseInt(new_next[counter]));
             }
         }
     }
@@ -51,8 +51,8 @@ public class WordNet {
         List<Integer> index;
         Set<Integer> reference;
         Set<String> result = new LinkedHashSet<>();
-        if (word_indexlist.containsKey(input)) {
-            index = word_indexlist.get(input);
+        if (wordIndexList.containsKey(input)) {
+            index = wordIndexList.get(input);
             for (Integer i : index) {
                 reference = graph.depthFirstTraversal(graph, i);
                 for (Integer j : reference) {
@@ -66,22 +66,21 @@ public class WordNet {
 
     public Set<String> hyponyms(Collection<String> words) {
         Set<String> result = new LinkedHashSet<>();
-        Set<String> toremove = new LinkedHashSet<>();
+        Set<String> to_remove = new LinkedHashSet<>();
         for (String input : words) {
-            Set<String> reference = new LinkedHashSet<>();
 
-            reference.addAll(hyponyms(input));
+            Set<String> reference = new LinkedHashSet<>(hyponyms(input));
             if (!result.isEmpty()) {
                 for (String index: result) {
                     if (!result.contains(index) || !reference.contains(index)) {
-                        toremove.add(index);
+                        to_remove.add(index);
                     }
                 }
             } else {
                 result.addAll(reference);
             }
         }
-        for (String remove: toremove) {
+        for (String remove: to_remove) {
             result.remove(remove);
         }
         return result;
