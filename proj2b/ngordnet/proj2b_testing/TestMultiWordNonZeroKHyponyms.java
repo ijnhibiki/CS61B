@@ -72,7 +72,6 @@ public class TestMultiWordNonZeroKHyponyms {
     @Test
     public void testMapFunctionK10() {
         List<String> words = List.of("map", "function");
-
         NgordnetQuery nq = new NgordnetQuery(words, 1900, 2020, 10);
         String actual = studentHandler.handle(nq);
         String expected = "[expansion, function, identity, map, operator, sec, series, sin, transformation, translation]";

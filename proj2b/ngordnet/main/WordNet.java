@@ -87,24 +87,27 @@ public class WordNet {
         return result;
     }
 
-    public Set<String> khyponyms (Collection<String> words, int startYear, int endYear, int k, NGramMap ngm) {
+    public ArrayList<String> khyponyms (Collection<String> words, int startYear, int endYear, int k, NGramMap ngm) {
         Set<String> result = new LinkedHashSet<>();
         LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();
         ArrayList<Integer> list = new ArrayList<>();
-        int counter = 0;
         if (k == 0) {
-            return hyponyms(words);
+            ArrayList<String> array = new ArrayList<>(hyponyms(words));
+            Collections.sort(array);
+            return array;
         } else {
             Map<String, Integer> reference = new HashMap<>();
             Set<String> result_hyponyms = hyponyms(words);
             for (String i : result_hyponyms) {
                 int popularity = popularity(ngm.countHistory(i, startYear, endYear), startYear, endYear);
-                reference.put(i, popularity);
+                if (popularity != 0) {
+                    reference.put(i, popularity);
+                }
             }
             for (Map.Entry<String, Integer> entry : reference.entrySet()) {
                 list.add(entry.getValue());
             }
-            Collections.sort(list);
+            Collections.sort(list, Collections.reverseOrder());
             for (int num : list) {
                 for (Entry<String, Integer> entry : reference.entrySet()) {
                     if (entry.getValue().equals(num)) {
@@ -112,22 +115,25 @@ public class WordNet {
                     }
                 }
             }
-
-            for (String string: sortedMap.keySet()) {
+            int counter = 0;
+            for (String i : sortedMap.keySet()) {
                 if (counter < k) {
-                    result.add(string);
+                    result.add(i);
+                    counter += 1;
                 } else {
                     break;
                 }
             }
-            return result;
+            ArrayList<String> array = new ArrayList<>(result);
+            Collections.sort(array);
+            return array;
         }
     }
 
     public int popularity(TimeSeries input, int startYear, int endYear) {
         int popularity = 0;
-        for (int i = startYear; i <= endYear; i++) {
-            popularity += input.get(i);
+        for (Integer year :input.years()) {
+            popularity += input.get(year);
         }
         return popularity;
     }
