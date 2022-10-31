@@ -107,7 +107,7 @@ public class WordNet {
             for (Map.Entry<String, Integer> entry : reference.entrySet()) {
                 list.add(entry.getValue());
             }
-            Collections.sort(list, Collections.reverseOrder());
+            list.sort(Collections.reverseOrder());
             for (int num : list) {
                 for (Entry<String, Integer> entry : reference.entrySet()) {
                     if (entry.getValue().equals(num)) {
