@@ -99,7 +99,7 @@ public class WordNet {
             Map<String, Integer> reference = new HashMap<>();
             Set<String> result_hyponyms = hyponyms(words);
             for (String i : result_hyponyms) {
-                int popularity = popularity(ngm.countHistory(i, startYear, endYear), startYear, endYear);
+                int popularity = popularity(ngm.countHistory(i, startYear, endYear));
                 if (popularity != 0) {
                     reference.put(i, popularity);
                 }
@@ -130,7 +130,7 @@ public class WordNet {
         }
     }
 
-    public int popularity(TimeSeries input, int startYear, int endYear) {
+    public int popularity(TimeSeries input) {
         int popularity = 0;
         for (Integer year :input.years()) {
             popularity += input.get(year);
