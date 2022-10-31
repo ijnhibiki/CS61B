@@ -1,0 +1,68 @@
+package ngordnet.main;
+
+import java.util.*;
+
+public class Graph {
+
+    private int edge;
+    private int vertices;
+    private Map<Integer, List<Integer>> brackets;
+    private LinkedList<Integer> child;
+    //Adjacency Matrix.
+    public Graph () {
+        this.brackets = new HashMap<>();
+        this.edge = 0;
+        this.vertices = 0;
+    }
+
+    public void addEdge(Integer parent, Integer child) {
+        if (brackets.containsKey(parent)) {
+            brackets.get(parent).add(child);
+            edge += 1;
+        }
+    }
+    public void addNode(Integer node) {
+        if (!brackets.containsKey(node)) {
+            child = new LinkedList<>();
+            brackets.put(node, child);
+            vertices += 1;
+        }
+    }
+
+    public int getEdge() {
+        return edge;
+    }
+
+    public int getVertix() {
+        return vertices;
+    }
+
+    public List<Integer> getNodes() {
+        return new LinkedList<>(brackets.keySet());
+    }
+
+    public List<Integer> neighbors(int vertix) {
+        if (brackets.containsKey(vertix)) {
+            return brackets.get(vertix);
+        }
+        return null;
+    }
+
+    public Set<Integer> depthFirstTraversal(Graph graph, Integer root) {
+        Set<Integer> visited = new LinkedHashSet<>();
+        Stack<Integer> stack = new Stack<>();
+        stack.push(root);
+        while(!stack.isEmpty()) {
+            Integer vertex = stack.pop();
+            if(!visited.contains(vertex)) {
+                visited.add(vertex);
+                for (Integer index : graph.neighbors(vertex)) {
+                    stack.push(index);
+                }
+            }
+        }
+        return visited;
+    }
+
+
+}
