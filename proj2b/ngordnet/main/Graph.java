@@ -9,7 +9,7 @@ public class Graph {
     private Map<Integer, List<Integer>> brackets;
     private LinkedList<Integer> neighbor;
     //Adjacency Matrix.
-    public Graph () {
+    public Graph() {
         this.brackets = new HashMap<>();
         this.edge = 0;
         this.vertices = 0;
@@ -52,9 +52,9 @@ public class Graph {
         Set<Integer> visited = new LinkedHashSet<>();
         Stack<Integer> stack = new Stack<>();
         stack.push(root);
-        while(!stack.isEmpty()) {
+        while (!stack.isEmpty()) {
             Integer vertex = stack.pop();
-            if(!visited.contains(vertex)) {
+            if (!visited.contains(vertex)) {
                 visited.add(vertex);
                 for (Integer index : graph.neighbors(vertex)) {
                     stack.push(index);

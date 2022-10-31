@@ -1,6 +1,5 @@
 package ngordnet.main;
 
-import edu.princeton.cs.algs4.ST;
 import ngordnet.hugbrowsermagic.NgordnetQuery;
 import ngordnet.hugbrowsermagic.NgordnetQueryHandler;
 import ngordnet.ngrams.NGramMap;
@@ -11,12 +10,12 @@ import org.knowm.xchart.XYChart;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HypohistHandler extends NgordnetQueryHandler{
+public class HypohistHandler extends NgordnetQueryHandler {
     private WordNet wn;
     private NGramMap ngm;
 
 
-    public HypohistHandler (WordNet wn, NGramMap ngm) {
+    public HypohistHandler(WordNet wn, NGramMap ngm) {
         this.wn = wn;
         this.ngm = ngm;
     }

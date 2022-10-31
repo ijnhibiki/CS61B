@@ -25,7 +25,7 @@ public class WordNet {
             graph.addNode(index);
             String[] definitions = newnext[1].split(" ");
             LinkedList<String> reference = new LinkedList<>();
-            for (String definition : definitions){
+            for (String definition : definitions) {
                 reference.add(definition);
                 if (!word_indexlist.containsKey(definition)) {
                     LinkedList<Integer> index_reference = new LinkedList<>();
@@ -41,7 +41,7 @@ public class WordNet {
             String next = Hyponyms.readLine();
             String[] newnext = next.split(",");
             int index = Integer.parseInt(newnext[0]);
-            for (int counter = 1; counter < newnext.length; counter ++) {
+            for (int counter = 1; counter < newnext.length; counter++) {
                 graph.addEdge(index, Integer.parseInt(newnext[counter]));
             }
         }
@@ -64,7 +64,7 @@ public class WordNet {
         return null;
     }
 
-    public Set<String> hyponyms (Collection<String> words) {
+    public Set<String> hyponyms(Collection<String> words) {
         Set<String> result = new LinkedHashSet<>();
         Set<String> toremove = new LinkedHashSet<>();
         for (String input : words) {
@@ -73,7 +73,7 @@ public class WordNet {
             reference.addAll(hyponyms(input));
             if (!result.isEmpty()) {
                 for (String index: result) {
-                    if (!result.contains(index)||!reference.contains(index)) {
+                    if (!result.contains(index) || !reference.contains(index)) {
                         toremove.add(index);
                     }
                 }
@@ -87,7 +87,7 @@ public class WordNet {
         return result;
     }
 
-    public ArrayList<String> khyponyms (Collection<String> words, int startYear, int endYear, int k, NGramMap ngm) {
+    public ArrayList<String> khyponyms(Collection<String> words, int startYear, int endYear, int k, NGramMap ngm) {
         Set<String> result = new LinkedHashSet<>();
         LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();
         ArrayList<Integer> list = new ArrayList<>();
