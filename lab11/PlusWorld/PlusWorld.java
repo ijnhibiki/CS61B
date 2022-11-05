@@ -38,20 +38,21 @@ public class PlusWorld {
     }
 
     private static void randomPlus(TETile[][] tiles, int s) {
-        int rowCounter = 1;
+        int rowCounter = 0;
         int colCounter = 0;
         int initialRow = getRandomNumber(0, s -1);
         int initialCol = getRandomNumber(-s + 1, 0);
         addPlus(tiles, s, initialCol, initialRow);
         while (emptyChecker(tiles)) {
-            if (initialCol - s > WIDTH ) {
-                switch (rowCounter % 3) {
-                    case 0 : addPlus(tiles, s, initialCol, initialRow);
-                    case 1 : addPlus(tiles, s, initialCol, initialRow -s);
-                    case 2 : addPlus(tiles, s, initialCol, initialRow + s);
-                }
+            if (initialCol - s < WIDTH) {
                 rowCounter += 1;
                 initialCol += s;
+                switch (rowCounter % 3) {
+                    case 0 -> addPlus(tiles, s, initialCol, initialRow);
+                    case 1 -> addPlus(tiles, s, initialCol, initialRow - s);
+                    case 2 -> addPlus(tiles, s, initialCol, initialRow + s);
+                }
+
             }else{
                 initialRow += s;
                 switch (colCounter % 3) {
@@ -109,9 +110,6 @@ public class PlusWorld {
             }
         }
         randomPlus(world,3);
-
-
-
         ter.renderFrame(world);
 
     }
