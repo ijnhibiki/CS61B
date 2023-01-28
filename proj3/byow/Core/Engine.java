@@ -1,13 +1,24 @@
 package byow.Core;
 
+import byow.InputDemo.InputSource;
+import byow.InputDemo.StringInputDevice;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
+import byow.TileEngine.Tileset;
+import java.util.Random;
+
+
+
 
 public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
+
+    private long SEED;
+
+    InputSource inputSource;
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -45,8 +56,32 @@ public class Engine {
         //
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
+        ter.initialize(WIDTH, HEIGHT);
 
-        TETile[][] finalWorldFrame = null;
-        return finalWorldFrame;
+        TETile[][] world = new TETile[WIDTH][HEIGHT];
+        //frameInitialize(world);
+        inputSource = new StringInputDevice(input);
+
+        while (inputSource.possibleNextInput()) {
+            char c = inputSource.getNextKey();
+            if (c == 'N'||c == 'n') {
+                //System.out.println("moo");
+            }
+            else if (c == 'S'||c == 's') {
+                //System.out.println("done.");
+            }
+            else {
+                SEED = SEED*10 + Integer.parseInt(String.valueOf(c));
+
+            }
+        }
+        //TETile[][] finalWorldFrame = world;
+        //System.out.println(SEED);
+
+        return null;
     }
+
+
 }
+
+
