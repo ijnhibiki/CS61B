@@ -14,7 +14,8 @@ public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
-    public static final int HEIGHT = 30;
+    public static final int HEIGHT = 60;
+    private TETile[][] world;
 
     private long SEED;
 
@@ -58,27 +59,28 @@ public class Engine {
         // that works for many different input types.
         ter.initialize(WIDTH, HEIGHT);
 
-        TETile[][] world = new TETile[WIDTH][HEIGHT];
         //frameInitialize(world);
         inputSource = new StringInputDevice(input);
 
         while (inputSource.possibleNextInput()) {
             char c = inputSource.getNextKey();
             if (c == 'N'||c == 'n') {
+                SEED = 0;
                 //System.out.println("moo");
             }
             else if (c == 'S'||c == 's') {
-                //System.out.println("done.");
+                break;
             }
             else {
                 SEED = SEED*10 + Integer.parseInt(String.valueOf(c));
-
             }
         }
-        //TETile[][] finalWorldFrame = world;
-        //System.out.println(SEED);
+        Map map = new Map(SEED);
+        world = map.MapGenerator();
 
-        return null;
+        System.out.println(SEED);
+
+        return world;
     }
 
 
