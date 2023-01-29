@@ -58,6 +58,9 @@ public class Map {
             }
         }
         NumRoom = notConnected;
+        int StartRoom = RANDOM.nextInt(NumRoom);
+        CheckSet.union(xyTo1D(rooms.get(StartRoom).getXCoordinte() + 1, rooms.get(StartRoom).getYCoordinte() + 1), WIDTH*HEIGHT);
+
         while (notConnected > 0) {
             int Room1;
             int Room2;
@@ -73,12 +76,7 @@ public class Map {
             rooms.get(Room1).connect();
             notConnected -= (update(NumRoom) + 1);
         }
-
-        //SetHPath(world, 30, 20, 40);
-        //SetVPath(world, 45, 10, 50);
-
-
-
+        //OuterWorld(world);
         return world;
     }
 
@@ -98,7 +96,7 @@ public class Map {
                     input[x+i][j+y] = Tileset.WALL;
                 } else {
                     input[x+i][j+y] = Tileset.FLOOR;
-                    CheckSet.union(xyTo1D((x+i), (y + j)), xyTo1D((x), (y)));
+                    CheckSet.union(xyTo1D((x+i), (y + j)), xyTo1D((x+1), (y+1)));
                 }
                 map.put((x+i) * 100 + (y + j), true);
             }
@@ -111,7 +109,7 @@ public class Map {
 
         for (int i = x1; i <= x2; i++) {
             input[i][y] = Tileset.FLOOR;
-            CheckSet.union(xyTo1D((i), (y)), WIDTH * HEIGHT);
+            CheckSet.union(xyTo1D((i), (y)), xyTo1D(x1,y));
             if (!input[i][y+1].equals(Tileset.FLOOR) ) {
                 input[i][y+1] = Tileset.WALL;
             }
@@ -136,7 +134,7 @@ public class Map {
         for (int i = y1 -1; i <= y2 +1; i++) {
             if(i != y1 -1 && i != y2 + 1) {
                 input[x][i] = Tileset.FLOOR;
-                CheckSet.union(xyTo1D((x), (i)), WIDTH * HEIGHT);
+                CheckSet.union(xyTo1D((x), (i)), xyTo1D(x,y1));
             }
             if (!input[x+1][i].equals(Tileset.FLOOR) ) {
                 input[x+1][i] = Tileset.WALL;
@@ -200,5 +198,36 @@ public class Map {
         return RoomCounter;
     }
 
+
+
+    private void OuterWorld(TETile[][] input) {
+        for (int x = 0; x < WIDTH; x += 1) {
+            for (int y = 0; y < HEIGHT; y += 1) {
+                if (!input[x][y].equals(Tileset.WALL) && !input[x][y].equals(Tileset.FLOOR)) {
+                    int tileNum = RANDOM.nextInt(5);
+                    switch (tileNum) {
+                        case 0:
+                            input[x][y] = Tileset.WATER;
+                            break;
+                        case 1:
+                            input[x][y] = Tileset.FLOWER;
+                            break;
+                        case 2:
+                            input[x][y] = Tileset.SAND;
+                            break;
+                        case 3:
+                            input[x][y] = Tileset.TREE;
+                            break;
+                        case 4:
+                            input[x][y] = Tileset.GRASS;
+                            break;
+                        default:
+                            input[x][y] = Tileset.NOTHING;
+                            break;
+                    }
+                }
+            }
+        }
+    }
 
 }

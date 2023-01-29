@@ -16,8 +16,8 @@ public class EngineTest {
     @Test
     public void stringInputTest() {
         Engine engine = new Engine();
-        TETile[][] world1 = engine.interactWithInputString("n22s");
-        TETile[][] world2 = engine.interactWithInputString("n22s");
+        TETile[][] world1 = engine.interactWithInputString("n222892s");
+        TETile[][] world2 = engine.interactWithInputString("n222892s");
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
                 assertEquals(world1[i][j].description(), world2[i][j].description());
