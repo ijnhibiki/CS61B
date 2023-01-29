@@ -57,7 +57,7 @@ public class Engine {
         //
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
-        ter.initialize(WIDTH, HEIGHT);
+        //ter.initialize(WIDTH, HEIGHT);
 
         //frameInitialize(world);
         inputSource = new StringInputDevice(input);
@@ -66,7 +66,6 @@ public class Engine {
             char c = inputSource.getNextKey();
             if (c == 'N'||c == 'n') {
                 SEED = 0;
-                //System.out.println("moo");
             }
             else if (c == 'S'||c == 's') {
                 break;
@@ -77,9 +76,7 @@ public class Engine {
         }
         Map map = new Map(SEED);
         world = map.MapGenerator();
-
         System.out.println(SEED);
-
         return world;
     }
 

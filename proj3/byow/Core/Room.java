@@ -4,10 +4,13 @@ public class Room {
     private int height;
     private int length;
     private int[] coordinate;
-    public Room (int height, int length, int RX, int RY, int LX, int LY) {
+
+    private boolean Connected;
+    public Room (int height, int length, int X, int Y) {
         this.height = height;
         this.length = length;
-        coordinate = new int[]{RX, RY, LX, LY};
+        this.Connected = false;
+        coordinate = new int[]{X, Y};
     }
 
     public int getHeight() {
@@ -17,8 +20,19 @@ public class Room {
         return length;
     }
 
-    public int getCoordinte(int index) {
-        return coordinate[index];
+    public int getXCoordinte() {
+        return coordinate[0];
+    }
+    public int getYCoordinte() {
+        return coordinate[1];
+    }
+
+    public boolean isConnected() {
+        return Connected;
+    }
+
+    public void connect() {
+        this.Connected = true;
     }
 
 
