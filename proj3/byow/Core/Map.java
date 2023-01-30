@@ -22,12 +22,14 @@ public class Map {
     private int AvatarX = 0;
     private int AvatarY = 0;
 
+    private String Avatar;
+
 
 
 
     private final Random RANDOM;
 
-    private HashMap<Integer, Boolean> map;
+    //private HashMap<Integer, Boolean> map;
 
     private ArrayList<Room> rooms;
 
@@ -40,12 +42,12 @@ public class Map {
 
 
     public TETile[][] MapGenerator() {
+        this.Avatar = "Golden Bear";
         int NumRoom =RANDOM.nextInt(MAX_NUM_ROOM - MIX_NUM_ROOM) + MIX_NUM_ROOM;
         int notConnected = NumRoom;
         CheckSet = new WeightedQuickUnionUF(WIDTH * HEIGHT + 1);
         rooms = new ArrayList<>();
         TETile[][] world = new TETile[WIDTH][HEIGHT];
-        map = new HashMap<>();
         frameInitialize(world);
         while (NumRoom > 0) {
             int RoomHeight = RANDOM.nextInt(MAX_ROOM_HEIGHT - MIX_ROOM_HEIGHT) + MIX_ROOM_HEIGHT;
@@ -53,7 +55,7 @@ public class Map {
             int Xcord = RANDOM.nextInt(WIDTH);
             int Ycord = RANDOM.nextInt(HEIGHT);
 
-            if (ValidateHouse(Xcord, Ycord, RoomLength, RoomHeight)) {
+            if (ValidateHouse(world, Xcord, Ycord, RoomLength, RoomHeight)) {
                 SetHouse(world,Xcord, Ycord, RoomLength, RoomHeight);
                 NumRoom -= 1;
                 Room NewRoom = new Room(RoomHeight, RoomLength, Xcord, Ycord);
@@ -61,16 +63,26 @@ public class Map {
             }
         }
         NumRoom = notConnected;
+        boolean R1 = true;
         int StartRoom = RANDOM.nextInt(NumRoom);
         CheckSet.union(xyTo1D(rooms.get(StartRoom).getXCoordinate() + 1, rooms.get(StartRoom).getYCoordinate() + 1), WIDTH*HEIGHT);
-
+        rooms.get(StartRoom).connect();
         while (notConnected > 0) {
             int Room1;
             int Room2;
-            do {
-                Room1 = RANDOM.nextInt(NumRoom);
-                Room2 = RANDOM.nextInt(NumRoom);
-            } while (rooms.get(Room1).isConnected() || Room1 == Room2);
+            if (R1) {
+                Room1 = StartRoom;
+                do {
+                    Room2 = RANDOM.nextInt(NumRoom);
+                } while (Room1 == Room2);
+            } else {
+                do {
+                    Room1 = RANDOM.nextInt(NumRoom);
+                    Room2 = RANDOM.nextInt(NumRoom);
+                } while (rooms.get(Room1).isConnected() || Room1 == Room2);
+
+            }
+            R1 = false;
             int x1 = RANDOM.nextInt(2,rooms.get(Room1).getLength() - 2) + rooms.get(Room1).getXCoordinate();
             int x2 = RANDOM.nextInt(2,rooms.get(Room2).getLength() - 2) + rooms.get(Room2).getXCoordinate();
             int y1 = RANDOM.nextInt(2,rooms.get(Room1).getHeight() - 2) + rooms.get(Room1).getYCoordinate();
@@ -89,7 +101,7 @@ public class Map {
         for (int x = 0; x < WIDTH; x += 1) {
             for (int y = 0; y < HEIGHT; y += 1) {
                 input[x][y] = Tileset.NOTHING;
-                map.put(x * 100 + y, false);
+                //map.put(x * 100 + y, false);
             }
         }
     }
@@ -113,7 +125,7 @@ public class Map {
                     input[x+i][j+y] = Tileset.FLOOR;
                     CheckSet.union(xyTo1D((x+i), (y + j)), xyTo1D((x+1), (y+1)));
                 }
-                map.put((x+i) * 100 + (y + j), true);
+                //map.put((x+i) * 100 + (y + j), true);
             }
         }
     }
@@ -183,10 +195,10 @@ public class Map {
         }
 
     }
-    private boolean ValidateHouse(int x, int y, int length, int height) {
+    private boolean ValidateHouse(TETile[][] input, int x, int y, int length, int height) {
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < height; j ++) {
-                if ((x + i) >= WIDTH - 3 || (y + j) >= HEIGHT -3|| x < 3|| y < 3 || isOverlap(x + i, y + j)) {
+                if ((x + i) >= WIDTH - 3 || (y + j) >= HEIGHT -3|| x < 3|| y < 3 || isOverlap(input,x + i, y + j)) {
                     return false;
                 }
             }
@@ -194,8 +206,8 @@ public class Map {
         return true;
     }
 
-    private boolean isOverlap(int x, int y) {
-        return map.get(x * 100 + y);
+    private boolean isOverlap(TETile[][] input, int x, int y) {
+        return input[x][y] == Tileset.WALL || input[x][y] == Tileset.FLOOR;
     }
 
     private int xyTo1D(int x, int y) {
@@ -240,37 +252,50 @@ public class Map {
         }
     }
 
-    public void moveAvatar(TETile[][] input, int n){
+    public boolean moveAvatar(TETile[][] input, int n){
+        boolean moved = false;
         if (n == 1 && accessible(input, AvatarX + 1, AvatarY)) {
             //move right
             input[AvatarX][AvatarY] = Tileset.FLOOR;
             input[AvatarX + 1][AvatarY] = Tileset.AVATAR;
             AvatarX = AvatarX + 1;
+            moved = true;
         }
         if (n == 2 && accessible(input, AvatarX - 1, AvatarY)) {
             //move left
             input[AvatarX][AvatarY] = Tileset.FLOOR;
             input[AvatarX - 1][AvatarY] = Tileset.AVATAR;
             AvatarX = AvatarX - 1;
+            moved = true;
         }
         if (n == 3 && accessible(input, AvatarX, AvatarY + 1)) {
             //move up
             input[AvatarX][AvatarY] = Tileset.FLOOR;
             input[AvatarX][AvatarY + 1] = Tileset.AVATAR;
             AvatarY = AvatarY + 1;
+            moved = true;
         }
         if (n == 4 && accessible(input, AvatarX, AvatarY - 1)) {
             //move down
             input[AvatarX][AvatarY] = Tileset.FLOOR;
             input[AvatarX][AvatarY - 1] = Tileset.AVATAR;
             AvatarY = AvatarY - 1;
+            moved = true;
         }
+        return moved;
     }
     private boolean accessible(TETile[][] input, int x, int y) {
         if (input[x][y] == Tileset.WALL) {
             return false;
         }
         return true;
+    }
+    public String AvatarName(){
+        return this.Avatar;
+    }
+
+    public void ChangeName(String input) {
+        this.Avatar = input;
     }
 
 }

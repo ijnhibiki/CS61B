@@ -16,8 +16,8 @@ public class EngineTest {
     @Test
     public void stringInputTest() {
         Engine engine = new Engine();
-        TETile[][] world1 = engine.interactWithInputString("n222892s");
-        TETile[][] world2 = engine.interactWithInputString("n222892s");
+        TETile[][] world1 = engine.interactWithInputString("n222892swwwww");
+        TETile[][] world2 = engine.interactWithInputString("n222892swwwww");
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
                 assertEquals(world1[i][j].description(), world2[i][j].description());
@@ -29,7 +29,7 @@ public class EngineTest {
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
         Engine engine = new Engine();
-        TETile[][] world1 = engine.interactWithInputString("n223432s");
+        TETile[][] world1 = engine.interactWithInputString("n223432sawawawawaw");
         ter.renderFrame(world1);
 
     }
