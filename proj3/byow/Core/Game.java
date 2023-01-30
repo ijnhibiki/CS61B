@@ -95,9 +95,12 @@ public class Game {
                     if (toChangeName) {
                         map.ChangeName(NewName);
                     }
-                    ter.initialize(WIDTH, HEIGHT + 2);
-                    ter.renderFrame(world);
-                    HUD(world);
+                    if (WithKeyboard) {
+                        ter.initialize(WIDTH, HEIGHT + 2);
+                        ter.renderFrame(world);
+                        HUD(world);
+                    }
+
                 }
                 else if (!isSubMenu && (command == 'S'||command == 's')) {
                     this.isSubMenu = true;
@@ -228,6 +231,18 @@ public class Game {
         StdDraw.text(this.width / 2, this.height / 2, input);
         StdDraw.show();
     }
+    // TODO: Set up save and load
+    // TODO: Add a Ambition Score
+    //Add a menu option to give your avatar a name which is displayed on the HUD.
+    //Add a display of real date and time in the Heads Up Display
+    //Add a menu option or randomly determine what the environment/theme of the world will be.
+
+    //Win or lose
+
+    //Add portals to your world which teleport the avatar.
+    //Add a hammer
+    //Add some neat easter eggs or cheat codes to your game which do something fun
+
 
 
 
