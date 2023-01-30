@@ -19,6 +19,9 @@ public class Map {
     private static final int MAX_ROOM_LENGTH = 14;
     private static final int MIX_ROOM_LENGTH = 6;
 
+    private int AvatarX = 0;
+    private int AvatarY = 0;
+
 
 
 
@@ -59,7 +62,7 @@ public class Map {
         }
         NumRoom = notConnected;
         int StartRoom = RANDOM.nextInt(NumRoom);
-        CheckSet.union(xyTo1D(rooms.get(StartRoom).getXCoordinte() + 1, rooms.get(StartRoom).getYCoordinte() + 1), WIDTH*HEIGHT);
+        CheckSet.union(xyTo1D(rooms.get(StartRoom).getXCoordinate() + 1, rooms.get(StartRoom).getYCoordinate() + 1), WIDTH*HEIGHT);
 
         while (notConnected > 0) {
             int Room1;
@@ -68,15 +71,17 @@ public class Map {
                 Room1 = RANDOM.nextInt(NumRoom);
                 Room2 = RANDOM.nextInt(NumRoom);
             } while (rooms.get(Room1).isConnected() || Room1 == Room2);
-            int x1 = RANDOM.nextInt(2,rooms.get(Room1).getLength() - 2) + rooms.get(Room1).getXCoordinte();
-            int x2 = RANDOM.nextInt(2,rooms.get(Room2).getLength() - 2) + rooms.get(Room2).getXCoordinte();
-            int y1 = RANDOM.nextInt(2,rooms.get(Room1).getHeight() - 2) + rooms.get(Room1).getYCoordinte();
-            int y2 = RANDOM.nextInt(2,rooms.get(Room2).getHeight() - 2) + rooms.get(Room2).getYCoordinte();
+            int x1 = RANDOM.nextInt(2,rooms.get(Room1).getLength() - 2) + rooms.get(Room1).getXCoordinate();
+            int x2 = RANDOM.nextInt(2,rooms.get(Room2).getLength() - 2) + rooms.get(Room2).getXCoordinate();
+            int y1 = RANDOM.nextInt(2,rooms.get(Room1).getHeight() - 2) + rooms.get(Room1).getYCoordinate();
+            int y2 = RANDOM.nextInt(2,rooms.get(Room2).getHeight() - 2) + rooms.get(Room2).getYCoordinate();
             SetTwoPointPath(world,x1,x2,y1,y2);
             rooms.get(Room1).connect();
             notConnected -= (update(NumRoom) + 1);
         }
-        //OuterWorld(world);
+        OuterWorld(world);
+        SetAvatar(world, NumRoom);
+
         return world;
     }
 
@@ -87,6 +92,16 @@ public class Map {
                 map.put(x * 100 + y, false);
             }
         }
+    }
+
+    private void SetAvatar(TETile[][] input, int NumRoom) {
+        int BornRoom = RANDOM.nextInt(NumRoom);
+        int BornX = rooms.get(BornRoom).getXCoordinate() + 1 + RANDOM.nextInt(rooms.get(BornRoom).getLength() -2);
+        int BornY = rooms.get(BornRoom).getYCoordinate() + 1 + RANDOM.nextInt(rooms.get(BornRoom).getHeight() -2);
+        input[BornX][BornY] = Tileset.AVATAR;
+        AvatarX = BornX;
+        AvatarY = BornY;
+
     }
 
     private void SetHouse(TETile[][] input, int x, int y, int length, int height) {
@@ -190,7 +205,7 @@ public class Map {
     private int update(int NumRoom) {
         int RoomCounter = 0;
         for (int i = 0; i < NumRoom; i ++) {
-            if(!rooms.get(i).isConnected() && CheckSet.connected(xyTo1D(rooms.get(i).getXCoordinte()+1, rooms.get(i).getYCoordinte()+1), WIDTH * HEIGHT)) {
+            if(!rooms.get(i).isConnected() && CheckSet.connected(xyTo1D(rooms.get(i).getXCoordinate()+1, rooms.get(i).getYCoordinate()+1), WIDTH * HEIGHT)) {
                 rooms.get(i).connect();
                 RoomCounter += 1;
             }
@@ -204,30 +219,58 @@ public class Map {
         for (int x = 0; x < WIDTH; x += 1) {
             for (int y = 0; y < HEIGHT; y += 1) {
                 if (!input[x][y].equals(Tileset.WALL) && !input[x][y].equals(Tileset.FLOOR)) {
-                    int tileNum = RANDOM.nextInt(5);
-                    switch (tileNum) {
-                        case 0:
-                            input[x][y] = Tileset.WATER;
-                            break;
-                        case 1:
-                            input[x][y] = Tileset.FLOWER;
-                            break;
-                        case 2:
-                            input[x][y] = Tileset.SAND;
-                            break;
-                        case 3:
-                            input[x][y] = Tileset.TREE;
-                            break;
-                        case 4:
-                            input[x][y] = Tileset.GRASS;
-                            break;
-                        default:
-                            input[x][y] = Tileset.NOTHING;
-                            break;
+                    int tileSelector = RANDOM.nextInt(100) + 1;
+                    if (tileSelector < 3) {
+                        input[x][y] = Tileset.FLOWER;
+                    }
+                    if (tileSelector >= 3 && tileSelector < 6) {
+                        input[x][y] = Tileset.TREE;
+                    }
+                    if (tileSelector >= 6 && tileSelector < 24) {
+                        input[x][y] = Tileset.WATER;
+                    }
+                    if (tileSelector >=24 && tileSelector < 90) {
+                        input[x][y] = Tileset.GRASS;
+                    }
+                    if (tileSelector >= 90) {
+                        input[x][y] = Tileset.MOUNTAIN;
                     }
                 }
             }
         }
+    }
+
+    public void moveAvatar(TETile[][] input, int n){
+        if (n == 1 && accessible(input, AvatarX + 1, AvatarY)) {
+            //move right
+            input[AvatarX][AvatarY] = Tileset.FLOOR;
+            input[AvatarX + 1][AvatarY] = Tileset.AVATAR;
+            AvatarX = AvatarX + 1;
+        }
+        if (n == 2 && accessible(input, AvatarX - 1, AvatarY)) {
+            //move left
+            input[AvatarX][AvatarY] = Tileset.FLOOR;
+            input[AvatarX - 1][AvatarY] = Tileset.AVATAR;
+            AvatarX = AvatarX - 1;
+        }
+        if (n == 3 && accessible(input, AvatarX, AvatarY + 1)) {
+            //move up
+            input[AvatarX][AvatarY] = Tileset.FLOOR;
+            input[AvatarX][AvatarY + 1] = Tileset.AVATAR;
+            AvatarY = AvatarY + 1;
+        }
+        if (n == 4 && accessible(input, AvatarX, AvatarY - 1)) {
+            //move down
+            input[AvatarX][AvatarY] = Tileset.FLOOR;
+            input[AvatarX][AvatarY - 1] = Tileset.AVATAR;
+            AvatarY = AvatarY - 1;
+        }
+    }
+    private boolean accessible(TETile[][] input, int x, int y) {
+        if (input[x][y] == Tileset.WALL) {
+            return false;
+        }
+        return true;
     }
 
 }

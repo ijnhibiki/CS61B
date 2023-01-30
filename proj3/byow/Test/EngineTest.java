@@ -26,8 +26,11 @@ public class EngineTest {
     }
     @Test
     public void SeedTest() {
+        TERenderer ter = new TERenderer();
+        ter.initialize(WIDTH, HEIGHT);
         Engine engine = new Engine();
         TETile[][] world1 = engine.interactWithInputString("n223432s");
+        ter.renderFrame(world1);
 
     }
     public static void main(String[] args) {

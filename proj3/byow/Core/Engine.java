@@ -1,11 +1,9 @@
 package byow.Core;
 
-import byow.InputDemo.InputSource;
-import byow.InputDemo.StringInputDevice;
+
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
-import byow.TileEngine.Tileset;
-import java.util.Random;
+
 
 
 
@@ -17,15 +15,17 @@ public class Engine {
     public static final int HEIGHT = 60;
     private TETile[][] world;
 
-    private long SEED;
-
-    InputSource inputSource;
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
      * including inputs from the main menu.
      */
     public void interactWithKeyboard() {
+        Game newGame = new Game();
+        newGame.StartGame(true, "");
+
+
+
     }
 
     /**
@@ -57,28 +57,12 @@ public class Engine {
         //
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
-        //ter.initialize(WIDTH, HEIGHT);
-
-        //frameInitialize(world);
-        inputSource = new StringInputDevice(input);
-
-        while (inputSource.possibleNextInput()) {
-            char c = inputSource.getNextKey();
-            if (c == 'N'||c == 'n') {
-                SEED = 0;
-            }
-            else if (c == 'S'||c == 's') {
-                break;
-            }
-            else {
-                SEED = SEED*10 + Integer.parseInt(String.valueOf(c));
-            }
-        }
-        Map map = new Map(SEED);
-        world = map.MapGenerator();
-        System.out.println(SEED);
+        Game newGame = new Game();
+        world = newGame.StartGame(false, input);
         return world;
     }
+
+
 
 
 }

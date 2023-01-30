@@ -1,9 +1,9 @@
 package byow.Core;
 
 public class Room {
-    private int height;
-    private int length;
-    private int[] coordinate;
+    private final int height;
+    private final int length;
+    private final int[] coordinate;
 
     private boolean Connected;
     public Room (int height, int length, int X, int Y) {
@@ -20,10 +20,10 @@ public class Room {
         return length;
     }
 
-    public int getXCoordinte() {
+    public int getXCoordinate() {
         return coordinate[0];
     }
-    public int getYCoordinte() {
+    public int getYCoordinate() {
         return coordinate[1];
     }
 
