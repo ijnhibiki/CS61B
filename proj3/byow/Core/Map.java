@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
+import byow.Core.Engine;
 
 
 import static byow.Core.Engine.HEIGHT;
@@ -22,38 +23,53 @@ public class Map {
     private int AvatarX = 0;
     private int AvatarY = 0;
 
+    private int NumRoom;
+
     private String Avatar;
+
+    private boolean setRooms;
+    private boolean setHeight;
+    private boolean setWidth;
+    private int MapHeight;
+    private int MapWidth;
 
 
 
 
     private final Random RANDOM;
 
-    //private HashMap<Integer, Boolean> map;
-
     private ArrayList<Room> rooms;
 
     private WeightedQuickUnionUF CheckSet;
 
-    public Map(long SEED) {
+    public Map(long SEED, int NumRoom, boolean setRooms, int MapHeight, boolean setHeight, int MapWidth, boolean setWidth) {
         this.RANDOM = new Random(SEED);
+        this.NumRoom = NumRoom;
+        this.setRooms = setRooms;
+        this.MapHeight = MapHeight;
+        this.setHeight = setHeight;
+        this.MapWidth = MapWidth;
+        this.setWidth = setWidth;
+
     }
 
 
 
     public TETile[][] MapGenerator() {
         this.Avatar = "Golden Bear";
-        int NumRoom =RANDOM.nextInt(MAX_NUM_ROOM - MIX_NUM_ROOM) + MIX_NUM_ROOM;
+        if (!setRooms) {
+            this.NumRoom =RANDOM.nextInt(MAX_NUM_ROOM - MIX_NUM_ROOM) + MIX_NUM_ROOM;
+        }
         int notConnected = NumRoom;
-        CheckSet = new WeightedQuickUnionUF(WIDTH * HEIGHT + 1);
+        CheckSet = new WeightedQuickUnionUF(this.MapWidth * this.MapHeight + 1);
         rooms = new ArrayList<>();
-        TETile[][] world = new TETile[WIDTH][HEIGHT];
+        TETile[][] world = new TETile[this.MapWidth][this.MapHeight];
         frameInitialize(world);
         while (NumRoom > 0) {
             int RoomHeight = RANDOM.nextInt(MAX_ROOM_HEIGHT - MIX_ROOM_HEIGHT) + MIX_ROOM_HEIGHT;
             int RoomLength = RANDOM.nextInt(MAX_ROOM_LENGTH - MIX_ROOM_LENGTH) + MIX_ROOM_LENGTH;
-            int Xcord = RANDOM.nextInt(WIDTH);
-            int Ycord = RANDOM.nextInt(HEIGHT);
+            int Xcord = RANDOM.nextInt(this.MapWidth);
+            int Ycord = RANDOM.nextInt(this.MapHeight);
 
             if (ValidateHouse(world, Xcord, Ycord, RoomLength, RoomHeight)) {
                 SetHouse(world,Xcord, Ycord, RoomLength, RoomHeight);
@@ -65,7 +81,7 @@ public class Map {
         NumRoom = notConnected;
         boolean R1 = true;
         int StartRoom = RANDOM.nextInt(NumRoom);
-        CheckSet.union(xyTo1D(rooms.get(StartRoom).getXCoordinate() + 1, rooms.get(StartRoom).getYCoordinate() + 1), WIDTH*HEIGHT);
+        CheckSet.union(xyTo1D(rooms.get(StartRoom).getXCoordinate() + 1, rooms.get(StartRoom).getYCoordinate() + 1), this.MapWidth*this.MapHeight);
         rooms.get(StartRoom).connect();
         while (notConnected > 0) {
             int Room1;
@@ -98,8 +114,8 @@ public class Map {
     }
 
     private void frameInitialize(TETile[][] input) {
-        for (int x = 0; x < WIDTH; x += 1) {
-            for (int y = 0; y < HEIGHT; y += 1) {
+        for (int x = 0; x < this.MapWidth; x += 1) {
+            for (int y = 0; y < this.MapHeight; y += 1) {
                 input[x][y] = Tileset.NOTHING;
                 //map.put(x * 100 + y, false);
             }
@@ -198,7 +214,7 @@ public class Map {
     private boolean ValidateHouse(TETile[][] input, int x, int y, int length, int height) {
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < height; j ++) {
-                if ((x + i) >= WIDTH - 3 || (y + j) >= HEIGHT -3|| x < 3|| y < 3 || isOverlap(input,x + i, y + j)) {
+                if ((x + i) >= this.MapWidth - 3 || (y + j) >= this.MapHeight -3|| x < 3|| y < 3 || isOverlap(input,x + i, y + j)) {
                     return false;
                 }
             }
@@ -211,13 +227,13 @@ public class Map {
     }
 
     private int xyTo1D(int x, int y) {
-        return x + (y * WIDTH);
+        return x + (y * this.MapWidth);
     }
 
     private int update(int NumRoom) {
         int RoomCounter = 0;
         for (int i = 0; i < NumRoom; i ++) {
-            if(!rooms.get(i).isConnected() && CheckSet.connected(xyTo1D(rooms.get(i).getXCoordinate()+1, rooms.get(i).getYCoordinate()+1), WIDTH * HEIGHT)) {
+            if(!rooms.get(i).isConnected() && CheckSet.connected(xyTo1D(rooms.get(i).getXCoordinate()+1, rooms.get(i).getYCoordinate()+1), this.MapWidth * this.MapHeight)) {
                 rooms.get(i).connect();
                 RoomCounter += 1;
             }
@@ -228,8 +244,8 @@ public class Map {
 
 
     private void OuterWorld(TETile[][] input) {
-        for (int x = 0; x < WIDTH; x += 1) {
-            for (int y = 0; y < HEIGHT; y += 1) {
+        for (int x = 0; x < this.MapWidth; x += 1) {
+            for (int y = 0; y < this.MapHeight; y += 1) {
                 if (!input[x][y].equals(Tileset.WALL) && !input[x][y].equals(Tileset.FLOOR)) {
                     int tileSelector = RANDOM.nextInt(100) + 1;
                     if (tileSelector < 3) {
@@ -253,36 +269,35 @@ public class Map {
     }
 
     public boolean moveAvatar(TETile[][] input, int n){
-        boolean moved = false;
         if (n == 1 && accessible(input, AvatarX + 1, AvatarY)) {
             //move right
             input[AvatarX][AvatarY] = Tileset.FLOOR;
             input[AvatarX + 1][AvatarY] = Tileset.AVATAR;
             AvatarX = AvatarX + 1;
-            moved = true;
+            return false;
         }
         if (n == 2 && accessible(input, AvatarX - 1, AvatarY)) {
             //move left
             input[AvatarX][AvatarY] = Tileset.FLOOR;
             input[AvatarX - 1][AvatarY] = Tileset.AVATAR;
             AvatarX = AvatarX - 1;
-            moved = true;
+            return false;
         }
         if (n == 3 && accessible(input, AvatarX, AvatarY + 1)) {
             //move up
             input[AvatarX][AvatarY] = Tileset.FLOOR;
             input[AvatarX][AvatarY + 1] = Tileset.AVATAR;
             AvatarY = AvatarY + 1;
-            moved = true;
+            return false;
         }
         if (n == 4 && accessible(input, AvatarX, AvatarY - 1)) {
             //move down
             input[AvatarX][AvatarY] = Tileset.FLOOR;
             input[AvatarX][AvatarY - 1] = Tileset.AVATAR;
             AvatarY = AvatarY - 1;
-            moved = true;
+            return false;
         }
-        return moved;
+        return true;
     }
     private boolean accessible(TETile[][] input, int x, int y) {
         if (input[x][y] == Tileset.WALL) {

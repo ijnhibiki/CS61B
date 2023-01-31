@@ -16,8 +16,8 @@ public class EngineTest {
     @Test
     public void stringInputTest() {
         Engine engine = new Engine();
-        TETile[][] world1 = engine.interactWithInputString("n222892swwwww");
-        TETile[][] world2 = engine.interactWithInputString("n222892swwwww");
+        TETile[][] world1 = engine.interactWithInputString("n22227982892swwwwwsssdawsdwa");
+        TETile[][] world2 = engine.interactWithInputString("n22227982892swwwwwsssdawsdwa");
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
                 assertEquals(world1[i][j].description(), world2[i][j].description());
@@ -43,7 +43,7 @@ public class EngineTest {
         //long seed = -2043309164258407346L;
         System.out.println(seed);
 
-        Map map = new Map(seed);
+        Map map = new Map(seed, 4, true, 60, false, 80, true);
 
         TETile[][] finalWorldFrame = map.MapGenerator();
         ter.renderFrame(finalWorldFrame);

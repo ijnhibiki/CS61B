@@ -12,7 +12,8 @@ public class KeyboardInputSource implements InputSource {
     }
 
     public char getNextKey() {
-        while (true) {
+        long start = System.currentTimeMillis();
+        while (System.currentTimeMillis() - start < 10) {
             if (StdDraw.hasNextKeyTyped()) {
                 char c = Character.toUpperCase(StdDraw.nextKeyTyped());
                 if (PRINT_TYPED_KEYS) {
@@ -21,6 +22,7 @@ public class KeyboardInputSource implements InputSource {
                 return c;
             }
         }
+        return '\0';
     }
 
     public boolean possibleNextInput() {
