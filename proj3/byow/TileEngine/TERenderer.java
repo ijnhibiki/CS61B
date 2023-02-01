@@ -1,5 +1,6 @@
 package byow.TileEngine;
 
+import byow.Core.Map;
 import edu.princeton.cs.algs4.StdDraw;
 
 import java.awt.Color;
@@ -83,19 +84,62 @@ public class TERenderer {
      * the screen in tiles.
      * @param world the 2D TETile[][] array to render
      */
-    public void renderFrame(TETile[][] world) {
+    public void renderFrame(TETile[][] world, int AvatarX, int AvatarY, boolean FiatLux) {
         int numXTiles = world.length;
         int numYTiles = world[0].length;
         StdDraw.clear(new Color(0, 0, 0));
-        for (int x = 0; x < numXTiles; x += 1) {
-            for (int y = 0; y < numYTiles; y += 1) {
-                if (world[x][y] == null) {
-                    throw new IllegalArgumentException("Tile at position x=" + x + ", y=" + y
-                            + " is null.");
+        if (FiatLux) {
+            for (int x = 0; x < numXTiles; x += 1) {
+                for (int y = 0; y < numYTiles; y += 1) {
+                    if (world[x][y] == null) {
+                        throw new IllegalArgumentException("Tile at position x=" + x + ", y=" + y
+                                + " is null.");
+                    }
+                    world[x][y].draw(x + xOffset, y + yOffset);
                 }
-                world[x][y].draw(x + xOffset, y + yOffset);
+            }
+        } else {
+            for (int x = AvatarX - 4; x <= AvatarX + 4; x++) {
+                for(int y = AvatarY - 4; y <= AvatarY + 4; y++) {
+                    /*if (world[x][y] == null) {
+                        throw new IllegalArgumentException("Tile at position x=" + x + ", y=" + y
+                                + " is null.");
+                    }
+
+                     */
+                    if (lightCheck(world,x,y,AvatarX,AvatarY) && visable(world,x,y)) {
+                        world[x][y].draw(x + xOffset, y + yOffset);
+                    }
+                }
             }
         }
         StdDraw.show();
     }
+
+    public boolean lightCheck(TETile[][] input,int x, int y, int Ax, int Ay) {
+        if (x < 0 || x >= input.length || y < 0|| y >= input[0].length) {
+            return false;
+        }
+        if (x == Ax && y == Ay) {
+            return true;
+        } else if(y == Ay && x > Ax -5 && x <Ax +5) {
+            return true;
+        } else if((y == Ay + 1 || y == Ay - 1) && x > Ax -4 && x <Ax +4) {
+            return true;
+        } else if ((y == Ay + 2 || y == Ay - 2) && x > Ax -3 && x <Ax +3) {
+            return true;
+        } else if ((y == Ay + 3 || y == Ay - 3) && x > Ax -2 && x <Ax +2) {
+            return true;
+        } else if ((y == Ay + 4 || y == Ay - 4) && x > Ax -1 && x <Ax +1) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+    public boolean visable(TETile[][] world,int x, int y) {
+        return world[x][y] == Tileset.WALL || world[x][y] == Tileset.FLOOR || world[x][y] == Tileset.AVATAR ||world[x][y] == Tileset.HAMMER||world[x][y] == Tileset.COIN;
+    }
+
+
 }

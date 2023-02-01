@@ -5,6 +5,7 @@ import byow.InputDemo.KeyboardInputSource;
 import byow.InputDemo.StringInputDevice;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
+import byow.TileEngine.Tileset;
 import edu.princeton.cs.algs4.StdDraw;
 import java.awt.Color;
 import java.awt.Font;
@@ -12,7 +13,6 @@ import java.io.*;
 import java.util.Scanner;
 import java.lang.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 
@@ -35,7 +35,6 @@ public class Game {
 
     private boolean isSeed;
 
-    private boolean lost;
     private boolean inGame;
 
     private InputSource inputSource;
@@ -47,7 +46,7 @@ public class Game {
 
     private Map map;
     private boolean isBlocked;
-    private String NewName;
+    private String AvatarName;
 
     private boolean readySave;
 
@@ -57,13 +56,20 @@ public class Game {
 
     private boolean WinOrLose;
     private boolean Hammer;
+    private int LenAtTranported;
 
-    private int Numrooms;
+    private int NumRooms;
     private boolean setRoom;
     private boolean setHeight;
-    private boolean setwidth;
+    private boolean setWidth;
     private int MapHeight;
     private int MapWidth;
+    private boolean FiatLux;
+
+    private int NumCoin;
+
+    private int NumHammer;
+    private int health;
 
 
 
@@ -78,16 +84,22 @@ public class Game {
         this.isSubMenu = false;
         this.isBlocked = false;
         this.isSeed = false;
-        this.lost = false;
         this.readySave = false;
         this.inGame = false;
+        this.AvatarName = "";
         this.ter = new TERenderer();
         this.keys = "";
-        this.Numrooms = 0;
+        this.NumRooms = 0;
+        this.Hammer = false;
+        this.NumHammer = 0;
+        this.NumCoin = 0;
         this.setRoom = false;
-        this.setwidth = false;
+        this.setWidth = false;
         this.setHeight = false;
         this.isSubSubMenu = false;
+        this.FiatLux = false;
+        this.health = 10;
+        this.LenAtTranported = 0;
         StdDraw.setCanvasSize(width * 16, height * 16);
         Font font = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(font);
@@ -107,41 +119,47 @@ public class Game {
 
         while(inputSource.possibleNextInput()) {
             char command = inputSource.getNextKey();
-            if(this.isMenu) {
-                if (isSubMenu && (command == 'Q'||command == 'q')) {
-                    if(WithKeyboard) {
+            if (this.isMenu) {
+                if (isSubMenu && (command == 'Q'|| command == 'q')) {
+                    if (WithKeyboard) {
                         DrawMenu();
                         this.isSubMenu = false;
                     }
-                }
-                else if (!isSubMenu && (command == 'Q'||command == 'q')) {
+                } else if (!isSubMenu && (command == 'Q'|| command == 'q')) {
                     System.exit(0);
-                }
-
-                else if (!isSubMenu && command == 'N'||command == 'n') {
+                } else if (!isSubMenu && command == 'N'|| command == 'n') {
                     SEED = 0;
                     isSubMenu = true;
                     isSeed = true;
                     if(WithKeyboard) {
                         SeedInput("");
                     }
-                }
-                else if (isSubMenu && (command == 'S'||command == 's')) {
+                } else if (isSubMenu && (command == 'S'|| command == 's')) {
                     isSubMenu = false;
                     this.isMenu = false;
                     this.inGame = true;
-                    map = new Map(SEED, this.Numrooms, this.setRoom, this.MapHeight, this.setHeight, this.MapWidth, this.setwidth);
+                    map = new Map(SEED, this.NumRooms, this.setRoom, this.MapHeight, this.setHeight, this.MapWidth, this.setWidth, this.Hammer, this.WinOrLose);
                     world = map.MapGenerator();
                     if (toChangeName) {
-                        map.ChangeName(NewName);
+                        map.ChangeName(AvatarName);
+                    } else {
+                        AvatarName = "Golden Bear";
+                        map.ChangeName(AvatarName);
+                    }
+                    if (this.SEED == 247) {
+                        AvatarName = "Berkelium";
+                        map.ChangeName(AvatarName);
+                        this.NumHammer = 200;
+                        map.changeHammer(200);
+
                     }
                     if (WithKeyboard) {
                         ter.initialize(this.MapWidth, this.MapHeight + 2);
-                        ter.renderFrame(world);
+                        ter.renderFrame(world, map.AvatarX(), map.AvatarY(), this.FiatLux);
                         HUD(world);
                     }
                 }
-                else if (!isSubMenu && (command == 'S'||command == 's')) {
+                else if (!isSubMenu && (command == 'S'|| command == 's')) {
                     this.isSubMenu = true;
                     DrawSetting();
                     while(inputSource.possibleNextInput()) {
@@ -161,9 +179,13 @@ public class Game {
                                         }
                                     }
                                 } else {
-                                    MapSize(Integer.toString(temp),1);
-                                    this.setwidth = true;
-                                    this.MapWidth = temp;
+                                    if (!(temp == 0)) {
+                                        this.MapWidth = temp;
+                                        this.setWidth = true;
+                                        MapSize(Integer.toString(temp),1);
+                                    } else {
+                                        MapSize(Integer.toString(this.MapWidth),1);
+                                    }
                                     break;
                                 }
                             }
@@ -184,9 +206,15 @@ public class Game {
                                         }
                                     }
                                 } else {
-                                    MapSize(Integer.toString(temp),2);
-                                    this.setHeight = true;
-                                    this.MapHeight = temp;
+
+                                    if (!(temp == 0)) {
+                                        this.MapHeight = temp;
+                                        this.setHeight = true;
+                                        MapSize(Integer.toString(temp),2);
+                                    } else  {
+                                        MapSize(Integer.toString(this.MapHeight),2);
+                                    }
+
                                     break;
                                 }
                             }
@@ -199,13 +227,13 @@ public class Game {
                                 char c = inputSource.getNextKey();
                                 if (c != '/') {
                                     if (Character.isDigit(c)) {
-                                        this.Numrooms = this.Numrooms *10 + Character.getNumericValue(c);
+                                        this.NumRooms = this.NumRooms *10 + Character.getNumericValue(c);
                                         if(WithKeyboard) {
-                                            NumRoom(Integer.toString(this.Numrooms));
+                                            NumRoom(Integer.toString(this.NumRooms));
                                         }
                                     }
                                 } else {
-                                    NumRoom(Integer.toString(this.Numrooms));
+                                    NumRoom(Integer.toString(this.NumRooms));
                                     this.setRoom = true;
                                     break;
                                 }
@@ -214,8 +242,7 @@ public class Game {
                         else if (choice == '4') {
                             this.isSubSubMenu = true;
                             this.isSubMenu = false;
-                            boolean indicator = this.WinOrLose;
-                            WinOrLose(String.valueOf(indicator));
+                            WinOrLose(String.valueOf(this.WinOrLose));
                             while(inputSource.possibleNextInput()) {
                                 char c = inputSource.getNextKey();
                                 if (c == '1') {
@@ -227,8 +254,7 @@ public class Game {
                                     WinOrLose(String.valueOf(c));
                                 }
                                 else if (c == '/'){
-                                    indicator = this.WinOrLose;
-                                    WinOrLose(String.valueOf(indicator));
+                                    WinOrLose(String.valueOf(this.WinOrLose));
                                     break;
                                 }
                             }
@@ -236,21 +262,19 @@ public class Game {
                         else if (choice == '5') {
                             this.isSubSubMenu = true;
                             this.isSubMenu = false;
-                            boolean indicator = this.Hammer;
-                            Hammer(String.valueOf(indicator));
+                            Hammer(String.valueOf(this.Hammer));
                             while(inputSource.possibleNextInput()) {
                                 char c = inputSource.getNextKey();
                                 if (c == '1') {
-                                    this.WinOrLose = true;
+                                    this.Hammer = true;
                                     Hammer(String.valueOf(c));
                                 }
                                 else if(c == '2') {
-                                    this.WinOrLose = false;
+                                    this.Hammer = false;
                                     Hammer(String.valueOf(c));
                                 }
                                 else if (c == '/'){
-                                    indicator = this.Hammer;
-                                    Hammer(String.valueOf(indicator));
+                                    Hammer(String.valueOf(this.Hammer));
                                     break;
                                 }
                             }
@@ -271,17 +295,17 @@ public class Game {
                 else if (!isSubMenu && (command == 'A'||command == 'a')){
                     this.isSubMenu = true;
                     NameInput("");
-                    NewName = "";
+                    AvatarName = "";
                     while(inputSource.possibleNextInput()) {
                         char name = inputSource.getNextKey();
                         if (name != '/') {
-                            NewName += Character.toLowerCase(name) ;
-                            NameInput(NewName);
+                            AvatarName += Character.toLowerCase(name) ;
+                            NameInput(AvatarName);
                         } else {
-                            toChangeName = NewName.length() > 0;
+                            toChangeName = AvatarName.length() > 0;
                             break;
                         }
-                        NameInput(NewName);
+                        NameInput(AvatarName);
                     }
 
                 }
@@ -292,17 +316,17 @@ public class Game {
                     isSubMenu = false;
                     this.isMenu = false;
                     this.inGame = true;
-                    map = new Map(SEED, this.Numrooms, this.setRoom, this.MapHeight, this.setHeight, this.MapWidth, this.setwidth);
+                    map = new Map(SEED, this.NumRooms, this.setRoom, this.MapHeight, this.setHeight, this.MapWidth, this.setWidth, this.Hammer, this.WinOrLose);
                     world = map.MapGenerator();
                     if (toChangeName) {
-                        map.ChangeName(NewName);
+                        map.ChangeName(AvatarName);
                     }
                     for (int i = 0; i < this.keys.length(); i++) {
                         move(this.keys.charAt(i));
                     }
                     if (WithKeyboard) {
                         ter.initialize(this.MapWidth, this.MapHeight + 2);
-                        ter.renderFrame(world);
+                        ter.renderFrame(world, map.AvatarX(), map.AvatarY(), this.FiatLux);
                         HUD(world);
                     }
 
@@ -319,20 +343,46 @@ public class Game {
                 }
             }
             else if (inGame){
+
                 if (isMoveCommand(command)) {
                     this.keys += command;
                     move(command);
+                    if(!map.isActive() && world[map.PX1()][map.PY1()] != Tileset.ClOSE_PORTAL) {
+                        world[map.PX1()][map.PY1()] = Tileset.ClOSE_PORTAL;
+                        world[map.PX2()][map.PY2()] = Tileset.ClOSE_PORTAL;
+                        this.LenAtTranported = keys.length();
+                    }
+                    this.NumHammer = map.NumHammer();
+                    if (keys.length() >= (LenAtTranported + 5) && !map.isActive()) {
+                        world[map.PX1()][map.PY1()] = Tileset.OPENED_PORTAL;
+                        world[map.PX2()][map.PY2()] = Tileset.OPENED_PORTAL;
+                        map.toActive();
+                        this.LenAtTranported = 0;
+                    }
                 }
                 else if (!readySave && command == ':') {
                     this.readySave = true;
                 } else if (readySave && (command == 'Q'|| command == 'q')) {
                     SaveFile();
                     System.exit(0);
-
+                }  else if (command == 'l' || command == 'L') {
+                    this.FiatLux = !this.FiatLux;
                 }
+
+                this.NumCoin = map.NumCoin();
+                this.health = map.HP();
+
                 if (WithKeyboard) {
-                    ter.renderFrame(world);
+                    ter.renderFrame(world, map.AvatarX(), map.AvatarY(), this.FiatLux);
                     HUD(world);
+                }
+                if (this.health == 0) {
+                    Lose();
+                    System.exit(0);
+                }
+                if(this.NumCoin == 7) {
+                    Win();
+                    System.exit(0);
                 }
 
             }
@@ -391,21 +441,56 @@ public class Game {
         Font fontSmall = new Font("Monaco", Font.PLAIN, 20);
         StdDraw.setFont(fontSmall);
         StdDraw.textLeft(0 ,this.MapHeight + 1, map.AvatarName());
-        StdDraw.textRight(this.MapWidth/3 ,this.MapHeight + 1, CurrentTime());
+        StdDraw.textRight(23 ,this.MapHeight + 1, CurrentTime());
         if(!isBlocked) {
-            StdDraw.text(this.MapWidth/3 * 2,this.MapHeight + 1, "Go bears!");
+            StdDraw.text(27,this.MapHeight + 1, "Go bears!");
 
         } else {
-            StdDraw.text(this.MapWidth/3 * 2,this.MapHeight + 1, "Try another direction!");
+            StdDraw.text(27,this.MapHeight + 1, "Go back!");
         }
+        StdDraw.text(35,this.MapHeight + 1, "Hammer: " + this.NumHammer);
+        StdDraw.text(42,this.MapHeight + 1, "Coin: " + this.NumCoin);
+        StdDraw.text(53,this.MapHeight + 1, "l :open/close light");
+        StdDraw.text(65,this.MapHeight + 1, "health: " + this.health);
         int MouseX = (int) StdDraw.mouseX();
         int MouseY = (int) StdDraw.mouseY();
         if (MouseX >=0 && MouseX < this.MapWidth && MouseY >=0 && MouseY < this.MapHeight) {
-            StdDraw.textRight(this.MapWidth ,this.MapHeight + 1, input[MouseX][MouseY].description());
+            if (this.FiatLux) {
+                StdDraw.textRight(this.MapWidth ,this.MapHeight + 1, input[MouseX][MouseY].description());
+            } else {
+                if (Math.abs(MouseX - map.AvatarX()) >=4 || Math.abs(MouseY - map.AvatarY()) >=4) {
+                    StdDraw.textRight(this.MapWidth ,this.MapHeight + 1, "???");
+                } else {
+                    StdDraw.textRight(this.MapWidth ,this.MapHeight + 1, input[MouseX][MouseY].description());
+                }
+            }
+
+        } else {
+            StdDraw.textRight(this.MapWidth ,this.MapHeight + 1, "???");
         }
         StdDraw.line(0,this.MapHeight + 0.5, this.MapWidth + 0.5, this.MapHeight + 0.5);
 
         StdDraw.show(100);
+    }
+    public void Win() {
+        StdDraw.clear(Color.BLACK);
+        StdDraw.setPenColor(Color.WHITE);
+        Font fontBig = new Font("Monaco", Font.BOLD, 40);
+        StdDraw.setFont(fontBig);
+        StdDraw.text(width / 2, height / 2, "You Win!");
+        StdDraw.show();
+        StdDraw.pause(3000);
+
+    }
+    public void Lose() {
+        StdDraw.clear(Color.BLACK);
+        StdDraw.setPenColor(Color.WHITE);
+        Font fontBig = new Font("Monaco", Font.BOLD, 40);
+        StdDraw.setFont(fontBig);
+        StdDraw.text(width / 2, height / 2, "You Lose!");
+        StdDraw.show();
+        StdDraw.pause(3000);
+
     }
 
     public String CurrentTime() {
@@ -449,7 +534,7 @@ public class Game {
     }
 
     public boolean isMoveCommand(Character input) {
-        return input == 'w' || input == 'W' || input == 's' ||input == 'S' || input == 'a' || input == 'A' ||input == 'd' ||input == 'D';
+        return input == 'w' || input == 'W' || input == 's' ||input == 'S' || input == 'a' || input == 'A' || input == 'd' || input == 'D';
     }
 
     public void SaveFile() {
@@ -465,6 +550,15 @@ public class Game {
             PrintWriter writer = new PrintWriter("save.txt", StandardCharsets.UTF_8);
             writer.println(this.SEED);
             writer.println(this.keys);
+            writer.println(this.AvatarName);
+            writer.println(this.setWidth);
+            writer.println(this.MapWidth);
+            writer.println(this.setHeight);
+            writer.println(this.MapHeight);
+            writer.println(setRoom);
+            writer.println(NumRooms);
+            writer.println(WinOrLose);
+            writer.println(Hammer);
             writer.close();
         } catch (ClassCastException excp) {
             throw new IllegalArgumentException(excp.getMessage());
@@ -481,10 +575,18 @@ public class Game {
             }
             Scanner myReader = new Scanner(save);
             this.SEED = Long.parseLong(myReader.nextLine());
-            String keys = myReader.nextLine();
+            this.keys = myReader.nextLine();
+            this.AvatarName = myReader.nextLine();
+            this.setWidth = Boolean.parseBoolean(myReader.nextLine());
+            this.MapWidth = Integer.parseInt(myReader.nextLine());
+            this.setHeight = Boolean.parseBoolean(myReader.nextLine());
+            this.MapHeight = Integer.parseInt(myReader.nextLine());
+            this.setRoom = Boolean.parseBoolean(myReader.nextLine());
+            this.NumRooms = Integer.parseInt(myReader.nextLine());
+            this.WinOrLose = Boolean.parseBoolean(myReader.nextLine());
+            this.Hammer = Boolean.parseBoolean(myReader.nextLine());
             myReader.close();
             //generate world with seed
-            this.keys = keys;
             //for char in game string, process char
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -497,8 +599,8 @@ public class Game {
         StdDraw.setPenColor(Color.WHITE);
         Font fontBig = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(fontBig);
-        StdDraw.text(width / 2, height /4 * 3, "Enter the number of room you want: (End with /)");
-        StdDraw.text(width / 2, height /4, "Press Q to quit");
+        StdDraw.text(width / 2, height / 4 * 3, "Enter the number of room you want: (End with /)");
+        StdDraw.text(width / 2, height / 4, "Press Q to quit");
         Font fontSmall = new Font("Monaco", Font.PLAIN, 30);
         StdDraw.setFont(fontSmall);
         StdDraw.text(this.width / 2, this.height / 2, input);
@@ -510,8 +612,8 @@ public class Game {
         StdDraw.setPenColor(Color.WHITE);
         Font fontBig = new Font("Monaco", Font.BOLD, 20);
         StdDraw.setFont(fontBig);
-        StdDraw.text(width / 2, height /4 * 3, "Press 1 to enable win or lose 2 to disable : (End with /)");
-        StdDraw.text(width / 2, height /4, "Press Q to quit");
+        StdDraw.text(width / 2, height / 4 * 3, "Press 1 to enable win or lose Press 2 to disable : (End with /)");
+        StdDraw.text(width / 2, height / 4, "Press Q to quit");
         Font fontSmall = new Font("Monaco", Font.PLAIN, 20);
         StdDraw.setFont(fontSmall);
         StdDraw.text(this.width / 2, this.height / 2, input);
@@ -522,8 +624,8 @@ public class Game {
         StdDraw.setPenColor(Color.WHITE);
         Font fontBig = new Font("Monaco", Font.BOLD, 20);
         StdDraw.setFont(fontBig);
-        StdDraw.text(width / 2, height /4 * 3, "Press 1 to enable win or lose 2 to disable : (End with /)");
-        StdDraw.text(width / 2, height /4, "Press Q to quit");
+        StdDraw.text(width / 2, height / 4 * 3, "Press 1 to enable Hammer Press 2 to disable : (End with /)");
+        StdDraw.text(width / 2, height / 4, "Press Q to quit");
         Font fontSmall = new Font("Monaco", Font.PLAIN, 20);
         StdDraw.setFont(fontSmall);
         StdDraw.text(this.width / 2, this.height / 2, input);
@@ -541,8 +643,8 @@ public class Game {
         StdDraw.setPenColor(Color.WHITE);
         Font fontBig = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(fontBig);
-        StdDraw.text(width / 2, height /4 * 3, "Enter the " +type+ " you want: (End with /)");
-        StdDraw.text(width / 2, height /4, "Press Q to quit");
+        StdDraw.text(width / 2, height / 4 * 3, "Enter the " + type + " you want: (End with /)");
+        StdDraw.text(width / 2, height / 4, "Press Q to quit");
         Font fontSmall = new Font("Monaco", Font.PLAIN, 30);
         StdDraw.setFont(fontSmall);
         StdDraw.text(this.width / 2, this.height / 2, input);
@@ -550,11 +652,7 @@ public class Game {
     }
 
 
-    //Add a menu option or randomly determine what the environment/theme of the world will be.
-
-    //Win or lose
+    
 
     //Add portals to your world which teleport the avatar.
-    //Add a hammer
-    //Add some neat easter eggs or cheat codes to your game which do something fun
 }

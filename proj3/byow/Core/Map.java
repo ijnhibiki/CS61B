@@ -4,10 +4,9 @@ import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
-import byow.Core.Engine;
+import byow.Core.Game;
 
 
 import static byow.Core.Engine.HEIGHT;
@@ -32,6 +31,26 @@ public class Map {
     private boolean setWidth;
     private int MapHeight;
     private int MapWidth;
+    private boolean WinOrLose;
+    private boolean Hammer;
+
+    private int NumHammer;
+    private int NumCoin;
+    private int health;
+
+    private TETile temp;
+    private boolean extraRoom;
+
+    private int ExRoomX;
+    private int ExRoomY;
+    private int PX1;
+    private int PY1;
+    private int PX2;
+    private int PY2;
+    private boolean isActive;
+
+
+
 
 
 
@@ -42,14 +61,31 @@ public class Map {
 
     private WeightedQuickUnionUF CheckSet;
 
-    public Map(long SEED, int NumRoom, boolean setRooms, int MapHeight, boolean setHeight, int MapWidth, boolean setWidth) {
+    public Map(long SEED, int NumRoom, boolean setRooms, int MapHeight, boolean setHeight, int MapWidth, boolean setWidth
+    ,boolean Hammer, boolean WinOrLose) {
         this.RANDOM = new Random(SEED);
         this.NumRoom = NumRoom;
+        this.health = 10;
         this.setRooms = setRooms;
         this.MapHeight = MapHeight;
         this.setHeight = setHeight;
         this.MapWidth = MapWidth;
         this.setWidth = setWidth;
+        this.Hammer = Hammer;
+        this.extraRoom = false;
+        this.NumCoin = 0;
+        this.ExRoomX = 0;
+        this.ExRoomY = 0;
+        this.isActive = true;
+        this.PX1 = 0;
+        this.PX2 = 0;
+        this.PY1 = 0;
+        this.PY2 = 0;
+
+        this.NumHammer = 0;
+        this.WinOrLose = WinOrLose;
+        this.temp = Tileset.FLOOR;
+
 
     }
 
@@ -107,9 +143,19 @@ public class Map {
             rooms.get(Room1).connect();
             notConnected -= (update(NumRoom) + 1);
         }
+
         OuterWorld(world);
         SetAvatar(world, NumRoom);
+        SetPortal(world, this.Hammer);
+        if(Hammer) {
+            SetHammer(world, NumRoom);
 
+        }
+        if(WinOrLose) {
+            SetCoin(world);
+            SetSand(world);
+            SetHammer(world, NumRoom);
+        }
         return world;
     }
 
@@ -122,6 +168,71 @@ public class Map {
         }
     }
 
+    private void SetCoin(TETile[][] input) {
+        for (int i = 0; i < 7; i ++){
+            int CoinRoom = RANDOM.nextInt(NumRoom);
+            if (!rooms.get(CoinRoom).hasCoin()) {
+                int CoinX = rooms.get(CoinRoom).getXCoordinate() + 1 + RANDOM.nextInt(rooms.get(CoinRoom).getLength() -2);
+                int CoinY = rooms.get(CoinRoom).getYCoordinate() + 1 + RANDOM.nextInt(rooms.get(CoinRoom).getHeight() -2);
+                if (input[CoinX][CoinY] != Tileset.HAMMER) {
+                    input[CoinX][CoinY] = Tileset.COIN;
+                } else {
+                    i -= 1;
+                }
+            }else {
+                i -=1;
+            }
+
+        }
+    }
+    private void SetPortal(TETile[][] input, boolean exRoom) {
+        if(exRoom) {
+            this.extraRoom = true;
+            int extraRoom = 1;
+            while (extraRoom > 0) {
+                int RoomHeight = RANDOM.nextInt(MAX_ROOM_HEIGHT - MIX_ROOM_HEIGHT) + MIX_ROOM_HEIGHT;
+                int RoomLength = RANDOM.nextInt(MAX_ROOM_LENGTH - MIX_ROOM_LENGTH) + MIX_ROOM_LENGTH;
+                int Xcord = RANDOM.nextInt(this.MapWidth);
+                int Ycord = RANDOM.nextInt(this.MapHeight);
+
+                if (ValidateHouse(input, Xcord, Ycord, RoomLength, RoomHeight)) {
+                    SetHouse(input,Xcord, Ycord, RoomLength, RoomHeight);
+                    extraRoom -= 1;
+                    this.ExRoomX = Xcord;
+                    this.ExRoomY = Ycord;
+                    Room NewRoom = new Room(RoomHeight, RoomLength, Xcord, Ycord);
+                    rooms.add(NewRoom);
+                }
+            }
+        }
+
+        int PX1;
+        int PY1;
+        int PX2;
+        int PY2;
+        if (exRoom) {
+            PX1 = this.ExRoomX;
+            PY1 = this.ExRoomY;
+            PX1 += 2;
+            PY1 += 2;
+        } else {
+            PX1 = 2;
+            PY1 = 2;
+        }
+        int Room2 = RANDOM.nextInt(NumRoom);
+        PX2 = rooms.get(Room2).getXCoordinate();
+        PX2 += 2;
+        PY2 = rooms.get(Room2).getYCoordinate();
+        PY2 += 2;
+        input[PX1][PY1] = Tileset.OPENED_PORTAL;
+        input[PX2][PY2] = Tileset.OPENED_PORTAL;
+        this.PY1 = PY1;
+        this.PY2 = PY2;
+        this.PX1 = PX1;
+        this.PX2 = PX2;
+
+    }
+
     private void SetAvatar(TETile[][] input, int NumRoom) {
         int BornRoom = RANDOM.nextInt(NumRoom);
         int BornX = rooms.get(BornRoom).getXCoordinate() + 1 + RANDOM.nextInt(rooms.get(BornRoom).getLength() -2);
@@ -129,6 +240,37 @@ public class Map {
         input[BornX][BornY] = Tileset.AVATAR;
         AvatarX = BornX;
         AvatarY = BornY;
+
+    }
+    private void SetHammer(TETile[][] input, int NumRoom) {
+        for (int i = 0; i < NumRoom / 5; i ++){
+            int HammerRoom = RANDOM.nextInt(NumRoom);
+            if (!rooms.get(HammerRoom).hasHammer()) {
+                int HammerX = rooms.get(HammerRoom).getXCoordinate() + 1 + RANDOM.nextInt(rooms.get(HammerRoom).getLength() -2);
+                int HammerY = rooms.get(HammerRoom).getYCoordinate() + 1 + RANDOM.nextInt(rooms.get(HammerRoom).getHeight() -2);
+                if (input[HammerX][HammerY] != Tileset.COIN) {
+                    input[HammerX][HammerY] = Tileset.HAMMER;
+                }else {
+                    i -= 1;
+                }
+            } else {
+                i -=1;
+            }
+
+        }
+    }
+    private void SetSand(TETile[][] input) {
+        for (int i = 0; i < 20; i ++){
+            int SandX = RANDOM.nextInt(this.MapWidth);
+            int SandY = RANDOM.nextInt(this.MapHeight);
+            if (input[SandX][SandY] == Tileset.FLOOR) {
+                    input[SandX][SandY] = Tileset.SAND;
+                }else {
+                    i -= 1;
+                }
+
+            }
+
 
     }
 
@@ -141,7 +283,6 @@ public class Map {
                     input[x+i][j+y] = Tileset.FLOOR;
                     CheckSet.union(xyTo1D((x+i), (y + j)), xyTo1D((x+1), (y+1)));
                 }
-                //map.put((x+i) * 100 + (y + j), true);
             }
         }
     }
@@ -271,38 +412,147 @@ public class Map {
     public boolean moveAvatar(TETile[][] input, int n){
         if (n == 1 && accessible(input, AvatarX + 1, AvatarY)) {
             //move right
-            input[AvatarX][AvatarY] = Tileset.FLOOR;
-            input[AvatarX + 1][AvatarY] = Tileset.AVATAR;
-            AvatarX = AvatarX + 1;
-            return false;
+            if (input[AvatarX + 1][AvatarY].equals(Tileset.OPENED_PORTAL)) {
+                input[AvatarX][AvatarY] = temp;
+                int TargatX = this.PX1;
+                int TargatY = this.PY1;
+                if (TargatX == AvatarX + 1 && TargatY == AvatarY) {
+                    TargatX = this.PX2;
+                    TargatY = this.PY2;
+                }
+                TETile temp2 = input[TargatX + 1][TargatY];
+                input[TargatX + 1][TargatY] = Tileset.AVATAR;
+                this.temp = temp2;
+                this.isActive = false;
+                AvatarX =TargatX + 1;
+                AvatarY = TargatY;
+                return false;
+            }else {
+                input[AvatarX][AvatarY] = temp;
+                if (!input[AvatarX + 1][AvatarY].equals(Tileset.WALL)  && !input[AvatarX + 1][AvatarY].equals(Tileset.HAMMER)&& !input[AvatarX + 1][AvatarY].equals(Tileset.COIN)) {
+                    temp = input[AvatarX + 1][AvatarY];
+                }
+                input[AvatarX + 1][AvatarY] = Tileset.AVATAR;
+                AvatarX = AvatarX + 1;
+                return false;
+            }
+
         }
         if (n == 2 && accessible(input, AvatarX - 1, AvatarY)) {
             //move left
-            input[AvatarX][AvatarY] = Tileset.FLOOR;
-            input[AvatarX - 1][AvatarY] = Tileset.AVATAR;
-            AvatarX = AvatarX - 1;
-            return false;
+            if (input[AvatarX - 1][AvatarY].equals(Tileset.OPENED_PORTAL)) {
+                input[AvatarX][AvatarY] = temp;
+                int TargatX = this.PX1;
+                int TargatY = this.PY1;
+                if (TargatX == AvatarX - 1 && TargatY == AvatarY) {
+                    TargatX = this.PX2;
+                    TargatY = this.PY2;
+                }
+                TETile temp2 = input[TargatX - 1][TargatY];
+                input[TargatX - 1][TargatY] = Tileset.AVATAR;
+                this.temp = temp2;
+                this.isActive = false;
+                AvatarX =TargatX - 1;
+                AvatarY = TargatY;
+                return false;
+            }else {
+                input[AvatarX][AvatarY] = temp;
+                if (!input[AvatarX - 1][AvatarY].equals(Tileset.WALL)  && !input[AvatarX - 1][AvatarY].equals(Tileset.HAMMER)&& !input[AvatarX - 1][AvatarY].equals(Tileset.COIN)) {
+                    temp = input[AvatarX - 1][AvatarY];
+                }
+                input[AvatarX - 1][AvatarY] = Tileset.AVATAR;
+                AvatarX = AvatarX - 1;
+                return false;
+            }
+
         }
         if (n == 3 && accessible(input, AvatarX, AvatarY + 1)) {
             //move up
-            input[AvatarX][AvatarY] = Tileset.FLOOR;
-            input[AvatarX][AvatarY + 1] = Tileset.AVATAR;
-            AvatarY = AvatarY + 1;
-            return false;
+            if (input[AvatarX][AvatarY + 1].equals(Tileset.OPENED_PORTAL)) {
+                input[AvatarX][AvatarY] = temp;
+                int TargatX = this.PX1;
+                int TargatY = this.PY1;
+                if (TargatY == AvatarY + 1&& TargatX == AvatarX) {
+                    TargatX = this.PX2;
+                    TargatY = this.PY2;
+                }
+                TETile temp2 = input[TargatX ][TargatY + 1];
+                input[TargatX][TargatY + 1] = Tileset.AVATAR;
+                this.temp = temp2;
+                this.isActive = false;
+                AvatarX =TargatX;
+                AvatarY = TargatY + 1;
+                return false;
+            }else {
+                input[AvatarX][AvatarY] = temp;
+                if (!input[AvatarX][AvatarY + 1].equals(Tileset.WALL)  && !input[AvatarX][AvatarY + 1].equals(Tileset.HAMMER)&& !input[AvatarX][AvatarY + 1].equals(Tileset.COIN)) {
+                    temp = input[AvatarX][AvatarY + 1];
+                }
+                input[AvatarX][AvatarY + 1] = Tileset.AVATAR;
+                AvatarY = AvatarY + 1;
+
+                return false;
+            }
         }
         if (n == 4 && accessible(input, AvatarX, AvatarY - 1)) {
             //move down
-            input[AvatarX][AvatarY] = Tileset.FLOOR;
-            input[AvatarX][AvatarY - 1] = Tileset.AVATAR;
-            AvatarY = AvatarY - 1;
-            return false;
+            if (input[AvatarX ][AvatarY + 1].equals(Tileset.OPENED_PORTAL)) {
+                input[AvatarX][AvatarY] = temp;
+                int TargatX = this.PX1;
+                int TargatY = this.PY1;
+                if (TargatY == AvatarY - 1&& TargatX == AvatarX) {
+                    TargatX = this.PX2;
+                    TargatY = this.PY2;
+                }
+                TETile temp2 = input[TargatX][TargatY - 1];
+                input[TargatX][TargatY - 1] = Tileset.AVATAR;
+                this.temp = temp2;
+                this.isActive = false;
+                AvatarX =TargatX ;
+                AvatarY = TargatY - 1;
+                return false;
+            }else {
+                input[AvatarX][AvatarY] = temp;
+                if (!input[AvatarX][AvatarY - 1].equals(Tileset.WALL)  && !input[AvatarX][AvatarY - 1].equals(Tileset.HAMMER)&& !input[AvatarX][AvatarY - 1].equals(Tileset.COIN)) {
+                    temp = input[AvatarX][AvatarY - 1];
+                }
+                input[AvatarX][AvatarY - 1] = Tileset.AVATAR;
+                AvatarY = AvatarY - 1;
+                return false;
+            }
         }
         return true;
     }
     private boolean accessible(TETile[][] input, int x, int y) {
-        if (input[x][y] == Tileset.WALL) {
+        if (x >= this.MapWidth || x <0 || y >= this.MapHeight || y <0){
             return false;
         }
+         if (input[x][y] == Tileset.WALL && this.NumHammer == 0) {
+            return false;
+        }
+         if(input[x][y] == Tileset.ClOSE_PORTAL) {
+             return false;
+         }
+         if(input[x][y] == Tileset.OPENED_PORTAL) {
+            return true;
+        }
+
+         else if(input[x][y] == Tileset.WALL && this.NumHammer > 0) {
+             this.NumHammer -= 1;
+             return true;
+         }
+         else if (input[x][y] == Tileset.HAMMER) {
+             this.NumHammer += 1;
+             return true;
+         }
+         else if (input[x][y] == Tileset.COIN) {
+             this.NumCoin += 1;
+             return true;
+         }
+         else if (input[x][y] == Tileset.SAND) {
+             this.health -= 1;
+             return true;
+         }
         return true;
     }
     public String AvatarName(){
@@ -311,6 +561,43 @@ public class Map {
 
     public void ChangeName(String input) {
         this.Avatar = input;
+    }
+    public int AvatarX() {
+        return AvatarX;
+    }
+    public int AvatarY(){
+        return AvatarY;
+    }
+    public int NumCoin() {
+        return this.NumCoin;
+    }
+    public int NumHammer(){
+        return this.NumHammer;
+    }
+    public int HP(){
+        return this.health;
+    }
+
+    public void changeHammer(int num) {
+        this.NumHammer = num;
+    }
+    public boolean isActive(){
+        return isActive;
+    }
+    public int PX1(){
+        return this.PX1;
+    }
+    public int PY1(){
+        return this.PY1;
+    }
+    public int PX2(){
+        return this.PX2;
+    }
+    public int PY2(){
+        return this.PY2;
+    }
+    public void toActive(){
+        this.isActive = true;
     }
 
 }

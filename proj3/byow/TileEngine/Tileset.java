@@ -33,6 +33,14 @@ public class Tileset {
     public static final TETile SAND = new TETile('▒', Color.yellow, Color.black, "sand");
     public static final TETile MOUNTAIN = new TETile('▲', Color.gray, Color.black, "mountain");
     public static final TETile TREE = new TETile('♠', Color.green, Color.black, "tree");
+
+    public static final TETile HAMMER = new TETile('T', Color.black, Color.blue, "hammer");
+
+    public static final TETile COIN = new TETile('⍟', Color.YELLOW, Color.BLACK, "coin");
+    public static final TETile OPENED_PORTAL = new TETile('ⵔ', Color.BLUE, Color.BLACK, "opened portal");
+    public static final TETile ClOSE_PORTAL = new TETile('⃠', Color.BLUE, Color.BLACK, "closed portal");
+
+
 }
 
 

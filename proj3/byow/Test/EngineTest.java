@@ -30,7 +30,7 @@ public class EngineTest {
         ter.initialize(WIDTH, HEIGHT);
         Engine engine = new Engine();
         TETile[][] world1 = engine.interactWithInputString("n223432sawawawawaw");
-        ter.renderFrame(world1);
+
 
     }
     public static void main(String[] args) {
@@ -43,10 +43,8 @@ public class EngineTest {
         //long seed = -2043309164258407346L;
         System.out.println(seed);
 
-        Map map = new Map(seed, 4, true, 60, false, 80, true);
 
-        TETile[][] finalWorldFrame = map.MapGenerator();
-        ter.renderFrame(finalWorldFrame);
+
 
     }
 }
