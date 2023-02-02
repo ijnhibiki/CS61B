@@ -1,11 +1,12 @@
 package byow.Core;
 
 
+import byow.Networking.BYOWClient;
+import byow.Networking.BYOWServer;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 
-
-
+import java.io.IOException;
 
 
 public class Engine {
@@ -63,8 +64,12 @@ public class Engine {
     }
 
 
+    public void interactWithRemoteClient(String input) throws IOException {
 
-
+        BYOWServer newServer = new BYOWServer(Integer.parseInt(input));
+        RemoteGame newRemoteGame = new RemoteGame();
+        newRemoteGame.StartGame(newServer);
+    }
 }
 
 

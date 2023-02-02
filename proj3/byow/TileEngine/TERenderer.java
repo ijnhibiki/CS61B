@@ -1,6 +1,7 @@
 package byow.TileEngine;
 
 import byow.Core.Map;
+import byow.Networking.BYOWServer;
 import edu.princeton.cs.algs4.StdDraw;
 
 import java.awt.Color;
@@ -28,12 +29,18 @@ public class TERenderer {
      * @param w width of the window in tiles
      * @param h height of the window in tiles.
      */
-    public void initialize(int w, int h, int xOff, int yOff) {
+    public void initialize(int w, int h, int xOff, int yOff, boolean remote, BYOWServer Server) {
         this.width = w;
         this.height = h;
         this.xOffset = xOff;
         this.yOffset = yOff;
-        StdDraw.setCanvasSize(width * TILE_SIZE, height * TILE_SIZE);
+        if (!remote) {
+            StdDraw.setCanvasSize(width * TILE_SIZE, height * TILE_SIZE);
+        } else {
+            StdDraw.setCanvasSize(width * TILE_SIZE, height * TILE_SIZE);
+            Server.sendCanvasConfig(width * TILE_SIZE, height * TILE_SIZE);
+        }
+
         Font font = new Font("Monaco", Font.BOLD, TILE_SIZE - 2);
         StdDraw.setFont(font);      
         StdDraw.setXscale(0, width);
@@ -42,7 +49,13 @@ public class TERenderer {
         StdDraw.clear(new Color(0, 0, 0));
 
         StdDraw.enableDoubleBuffering();
-        StdDraw.show();
+        if(!remote) {
+            StdDraw.show();
+        } else {
+            StdDraw.show();
+            Server.sendCanvas();
+        }
+
     }
 
     /**
@@ -58,8 +71,8 @@ public class TERenderer {
      * @param w width of the window in tiles
      * @param h height of the window in tiles.
      */
-    public void initialize(int w, int h) {
-        initialize(w, h, 0, 0);
+    public void initialize(int w, int h, boolean remote, BYOWServer Server) {
+        initialize(w, h, 0, 0,remote,Server);
     }
 
     /**
@@ -84,7 +97,7 @@ public class TERenderer {
      * the screen in tiles.
      * @param world the 2D TETile[][] array to render
      */
-    public void renderFrame(TETile[][] world, int AvatarX, int AvatarY, boolean FiatLux) {
+    public void renderFrame(TETile[][] world, int AvatarX, int AvatarY, boolean FiatLux, boolean remote, BYOWServer Server) {
         int numXTiles = world.length;
         int numYTiles = world[0].length;
         StdDraw.clear(new Color(0, 0, 0));
@@ -113,7 +126,13 @@ public class TERenderer {
                 }
             }
         }
-        StdDraw.show();
+        if (!remote) {
+            StdDraw.show();
+        } else {
+            StdDraw.show();
+            Server.sendCanvas();
+        }
+
     }
 
     public boolean lightCheck(TETile[][] input,int x, int y, int Ax, int Ay) {

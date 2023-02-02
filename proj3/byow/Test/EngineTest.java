@@ -27,7 +27,7 @@ public class EngineTest {
     @Test
     public void SeedTest() {
         TERenderer ter = new TERenderer();
-        ter.initialize(WIDTH, HEIGHT);
+        ter.initialize(WIDTH, HEIGHT, false,null);
         Engine engine = new Engine();
         TETile[][] world1 = engine.interactWithInputString("n223432sawawawawaw");
 
@@ -35,7 +35,7 @@ public class EngineTest {
     }
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
-        ter.initialize(WIDTH, HEIGHT);
+        ter.initialize(WIDTH, HEIGHT, false, null);
 
         Random r = new Random();
 
