@@ -6,11 +6,7 @@ import byow.TileEngine.Tileset;
 import java.util.ArrayList;
 import java.util.Random;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
-import byow.Core.Game;
 
-
-import static byow.Core.Engine.HEIGHT;
-import static byow.Core.Engine.WIDTH;
 public class Map {
     private static final int MIX_NUM_ROOM = 20;
     private static final int MAX_NUM_ROOM = 25;
@@ -48,6 +44,7 @@ public class Map {
     private int PX2;
     private int PY2;
     private boolean isActive;
+    private int avatarSelector;
 
 
 
@@ -62,7 +59,7 @@ public class Map {
     private WeightedQuickUnionUF CheckSet;
 
     public Map(long SEED, int NumRoom, boolean setRooms, int MapHeight, boolean setHeight, int MapWidth, boolean setWidth
-    ,boolean Hammer, boolean WinOrLose) {
+    ,boolean Hammer, boolean WinOrLose, int avatarSelector) {
         this.RANDOM = new Random(SEED);
         this.NumRoom = NumRoom;
         this.health = 10;
@@ -81,6 +78,7 @@ public class Map {
         this.PX2 = 0;
         this.PY1 = 0;
         this.PY2 = 0;
+        this.avatarSelector = avatarSelector;
 
         this.NumHammer = 0;
         this.WinOrLose = WinOrLose;
@@ -237,7 +235,7 @@ public class Map {
         int BornRoom = RANDOM.nextInt(NumRoom);
         int BornX = rooms.get(BornRoom).getXCoordinate() + 1 + RANDOM.nextInt(rooms.get(BornRoom).getLength() -2);
         int BornY = rooms.get(BornRoom).getYCoordinate() + 1 + RANDOM.nextInt(rooms.get(BornRoom).getHeight() -2);
-        input[BornX][BornY] = Tileset.AVATAR;
+        input[BornX][BornY] = avatarSelector(this.avatarSelector);
         AvatarX = BornX;
         AvatarY = BornY;
 
@@ -421,7 +419,7 @@ public class Map {
                     TargatY = this.PY2;
                 }
                 TETile temp2 = input[TargatX + 1][TargatY];
-                input[TargatX + 1][TargatY] = Tileset.AVATAR;
+                input[TargatX + 1][TargatY] = avatarSelector(this.avatarSelector);
                 this.temp = temp2;
                 this.isActive = false;
                 AvatarX =TargatX + 1;
@@ -432,7 +430,7 @@ public class Map {
                 if (!input[AvatarX + 1][AvatarY].equals(Tileset.WALL)  && !input[AvatarX + 1][AvatarY].equals(Tileset.HAMMER)&& !input[AvatarX + 1][AvatarY].equals(Tileset.COIN)) {
                     temp = input[AvatarX + 1][AvatarY];
                 }
-                input[AvatarX + 1][AvatarY] = Tileset.AVATAR;
+                input[AvatarX + 1][AvatarY] = avatarSelector(this.avatarSelector);
                 AvatarX = AvatarX + 1;
                 return false;
             }
@@ -449,7 +447,7 @@ public class Map {
                     TargatY = this.PY2;
                 }
                 TETile temp2 = input[TargatX - 1][TargatY];
-                input[TargatX - 1][TargatY] = Tileset.AVATAR;
+                input[TargatX - 1][TargatY] = avatarSelector(this.avatarSelector);
                 this.temp = temp2;
                 this.isActive = false;
                 AvatarX =TargatX - 1;
@@ -460,7 +458,7 @@ public class Map {
                 if (!input[AvatarX - 1][AvatarY].equals(Tileset.WALL)  && !input[AvatarX - 1][AvatarY].equals(Tileset.HAMMER)&& !input[AvatarX - 1][AvatarY].equals(Tileset.COIN)) {
                     temp = input[AvatarX - 1][AvatarY];
                 }
-                input[AvatarX - 1][AvatarY] = Tileset.AVATAR;
+                input[AvatarX - 1][AvatarY] = avatarSelector(this.avatarSelector);
                 AvatarX = AvatarX - 1;
                 return false;
             }
@@ -477,7 +475,7 @@ public class Map {
                     TargatY = this.PY2;
                 }
                 TETile temp2 = input[TargatX ][TargatY + 1];
-                input[TargatX][TargatY + 1] = Tileset.AVATAR;
+                input[TargatX][TargatY + 1] = avatarSelector(this.avatarSelector);
                 this.temp = temp2;
                 this.isActive = false;
                 AvatarX =TargatX;
@@ -488,7 +486,7 @@ public class Map {
                 if (!input[AvatarX][AvatarY + 1].equals(Tileset.WALL)  && !input[AvatarX][AvatarY + 1].equals(Tileset.HAMMER)&& !input[AvatarX][AvatarY + 1].equals(Tileset.COIN)) {
                     temp = input[AvatarX][AvatarY + 1];
                 }
-                input[AvatarX][AvatarY + 1] = Tileset.AVATAR;
+                input[AvatarX][AvatarY + 1] = avatarSelector(this.avatarSelector);
                 AvatarY = AvatarY + 1;
 
                 return false;
@@ -505,7 +503,7 @@ public class Map {
                     TargatY = this.PY2;
                 }
                 TETile temp2 = input[TargatX][TargatY - 1];
-                input[TargatX][TargatY - 1] = Tileset.AVATAR;
+                input[TargatX][TargatY - 1] = avatarSelector(this.avatarSelector);
                 this.temp = temp2;
                 this.isActive = false;
                 AvatarX =TargatX ;
@@ -516,7 +514,7 @@ public class Map {
                 if (!input[AvatarX][AvatarY - 1].equals(Tileset.WALL)  && !input[AvatarX][AvatarY - 1].equals(Tileset.HAMMER)&& !input[AvatarX][AvatarY - 1].equals(Tileset.COIN)) {
                     temp = input[AvatarX][AvatarY - 1];
                 }
-                input[AvatarX][AvatarY - 1] = Tileset.AVATAR;
+                input[AvatarX][AvatarY - 1] = avatarSelector(this.avatarSelector);
                 AvatarY = AvatarY - 1;
                 return false;
             }
@@ -598,6 +596,15 @@ public class Map {
     }
     public void toActive(){
         this.isActive = true;
+    }
+    public TETile avatarSelector(int selector) {
+        if(selector == 1) {
+            return Tileset.AVATAR1;
+        } else if(selector == 2) {
+            return Tileset.AVATAR2;
+        } else {
+            return Tileset.AVATAR3;
+        }
     }
 
 }

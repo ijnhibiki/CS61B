@@ -1,6 +1,6 @@
 package byow.TileEngine;
 
-import byow.Core.Map;
+
 import byow.Networking.BYOWServer;
 import edu.princeton.cs.algs4.StdDraw;
 
@@ -28,7 +28,7 @@ public class TERenderer {
      * @param w width of the window in tiles
      * @param h height of the window in tiles.
      */
-    public void initialize(int w, int h, int xOff, int yOff, boolean remote, BYOWServer Server) {
+    public void initialize(int w, int h, int xOff, int yOff, boolean remote, BYOWServer server) {
         this.width = w;
         this.height = h;
         this.xOffset = xOff;
@@ -37,7 +37,7 @@ public class TERenderer {
             StdDraw.setCanvasSize(width * TILE_SIZE, height * TILE_SIZE);
         } else {
             StdDraw.setCanvasSize(width * TILE_SIZE, height * TILE_SIZE);
-            Server.sendCanvasConfig(width * TILE_SIZE, height * TILE_SIZE);
+            server.sendCanvasConfig(width * TILE_SIZE, height * TILE_SIZE);
         }
 
         Font font = new Font("Monaco", Font.BOLD, TILE_SIZE - 2);
@@ -48,11 +48,11 @@ public class TERenderer {
         StdDraw.clear(new Color(0, 0, 0));
 
         StdDraw.enableDoubleBuffering();
-        if(!remote) {
+        if (!remote) {
             StdDraw.show();
         } else {
             StdDraw.show();
-            Server.sendCanvas();
+            server.sendCanvas();
         }
 
     }
@@ -70,8 +70,8 @@ public class TERenderer {
      * @param w width of the window in tiles
      * @param h height of the window in tiles.
      */
-    public void initialize(int w, int h, boolean remote, BYOWServer Server) {
-        initialize(w, h, 0, 0,remote,Server);
+    public void initialize(int w, int h, boolean remote, BYOWServer server) {
+        initialize(w, h, 0, 0, remote, server);
     }
 
     /**
@@ -96,11 +96,11 @@ public class TERenderer {
      * the screen in tiles.
      * @param world the 2D TETile[][] array to render
      */
-    public void renderFrame(TETile[][] world, int AvatarX, int AvatarY, boolean FiatLux, boolean remote, BYOWServer Server) {
+    public void renderFrame(TETile[][] world, int avatarX, int avatarY, boolean fiatLux, boolean remote, BYOWServer server) {
         int numXTiles = world.length;
         int numYTiles = world[0].length;
         StdDraw.clear(new Color(0, 0, 0));
-        if (FiatLux) {
+        if (fiatLux) {
             for (int x = 0; x < numXTiles; x += 1) {
                 for (int y = 0; y < numYTiles; y += 1) {
                     if (world[x][y] == null) {
@@ -111,13 +111,13 @@ public class TERenderer {
                 }
             }
         } else {
-            for (int x = AvatarX - 4; x <= AvatarX + 4; x++) {
-                for(int y = AvatarY - 4; y <= AvatarY + 4; y++) {
+            for (int x = avatarX - 4; x <= avatarX + 4; x++) {
+                for (int y = avatarY - 4; y <= avatarY + 4; y++) {
                     /*if (world[x][y] == null) {
                         throw new IllegalArgumentException("Tile at position x=" + x + ", y=" + y
                                 + " is null.");
                     } */
-                    if (lightCheck(world,x,y,AvatarX,AvatarY) && lightCheck2(world,x,y,AvatarX,AvatarY)) {
+                    if (lightCheck(world, x, y, avatarX, avatarY) && lightCheck2(world, x, y, avatarX, avatarY)) {
                         world[x][y].draw(x + xOffset, y + yOffset);
                     }
                 }
@@ -127,26 +127,26 @@ public class TERenderer {
             StdDraw.show();
         } else {
             StdDraw.show();
-            Server.sendCanvas();
+            server.sendCanvas();
         }
 
     }
 
-    public boolean lightCheck(TETile[][] input,int x, int y, int Ax, int Ay) {
-        if (x < 0 || x >= input.length || y < 0|| y >= input[0].length) {
+    public boolean lightCheck(TETile[][] input, int x, int y, int avatarX, int avatarY) {
+        if (x < 0 || x >= input.length || y < 0 || y >= input[0].length) {
             return false;
         }
-        if (x == Ax && y == Ay) {
+        if (x == avatarX && y == avatarY) {
             return true;
-        } else if(y == Ay && x > Ax -5 && x <Ax +5) {
+        } else if (y == avatarY && x > avatarX - 5 && x < avatarX + 5) {
             return true;
-        } else if((y == Ay + 1 || y == Ay - 1) && x > Ax -4 && x <Ax +4) {
+        } else if ((y == avatarY + 1 || y == avatarY - 1) && x > avatarX - 4 && x < avatarX + 4) {
             return true;
-        } else if ((y == Ay + 2 || y == Ay - 2) && x > Ax -3 && x <Ax +3) {
+        } else if ((y == avatarY + 2 || y == avatarY - 2) && x > avatarX - 3 && x < avatarX + 3) {
             return true;
-        } else if ((y == Ay + 3 || y == Ay - 3) && x > Ax -2 && x <Ax +2) {
+        } else if ((y == avatarY + 3 || y == avatarY - 3) && x > avatarX - 2 && x < avatarX + 2) {
             return true;
-        } else if ((y == Ay + 4 || y == Ay - 4) && x > Ax -1 && x <Ax +1) {
+        } else if ((y == avatarY + 4 || y == avatarY - 4) && x > avatarX - 1 && x < avatarX + 1) {
             return true;
         } else {
             return false;
@@ -155,45 +155,45 @@ public class TERenderer {
     }
 
 
-    public boolean lightCheck2(TETile[][] input,int x, int y, int Ax, int Ay) {
-        if (x >= Ax-1 && x<=Ax + 1 && y>=Ay -1 && y <= Ay+1){
+    public boolean lightCheck2(TETile[][] input, int x, int y, int avatarX, int avatarY) {
+        if (x >= avatarX - 1 && x <= avatarX + 1 && y >= avatarY - 1 && y <= avatarY + 1) {
             return true;
-        } else if(y >= Ay + 2 && x>= Ax-1&&x<=Ax+1) {
-            for (int i = y -1; i >Ay; i--) {
-                if(input[x][i] == Tileset.WALL) {
+        } else if (y >= avatarY + 2 && x >= avatarX - 1 && x <= avatarX + 1) {
+            for (int i = y - 1; i > avatarY; i--) {
+                if (input[x][i] == Tileset.WALL) {
                     return false;
                 }
             }
             return true;
-        } else if(y <= Ay - 2 && x>= Ax-1&&x<=Ax+1) {
-            for (int i = y + 1; i <Ay; i++) {
-                if(input[x][i] == Tileset.WALL) {
+        } else if (y <= avatarY - 2 && x >= avatarX - 1 && x <= avatarX + 1) {
+            for (int i = y + 1; i < avatarY; i++) {
+                if (input[x][i] == Tileset.WALL) {
                     return false;
                 }
             }
             return true;
-        } else if(x >= Ax + 2 && y>= Ay-1&&y<=Ay+1) {
-            for (int i = x -1; i >Ax; i--) {
-                if(input[i][y] == Tileset.WALL) {
+        } else if (x >= avatarX + 2 && y >= avatarY - 1 && y <= avatarY + 1) {
+            for (int i = x - 1; i > avatarX; i--) {
+                if (input[i][y] == Tileset.WALL) {
                     return false;
                 }
             }
             return true;
-        } else if(x <= Ax - 2 && y>= Ay-1&&y<=Ay+1){
-            for (int i = x + 1; i <Ax; i++) {
-                if(input[i][y] == Tileset.WALL) {
+        } else if (x <= avatarX - 2 && y >= avatarY - 1 && y <= avatarY + 1) {
+            for (int i = x + 1; i < avatarX; i++) {
+                if (input[i][y] == Tileset.WALL) {
                     return false;
                 }
             }
             return true;
-        }else if(x == Ax -2 && y ==Ay+2) {
+        } else if (x == avatarX - 2 && y == avatarY + 2) {
             return input[x][y - 1] != Tileset.WALL && input[x + 1][y] != Tileset.WALL && input[x + 1][y - 1] != Tileset.WALL && input[x + 1][y - 2] != Tileset.WALL;
-        }else if(x == Ax +2 && y ==Ay+2) {
-            return input[x][y-1] != Tileset.WALL && input[x-1][y] != Tileset.WALL && input[x - 1][y - 1] != Tileset.WALL && input[x - 1][y - 2] != Tileset.WALL;
-        }else if(x == Ax - 2 && y ==Ay - 2){
-            return input[x][y+1] != Tileset.WALL && input[x + 1][y] != Tileset.WALL && input[x+1][y-1] != Tileset.WALL && input[x+1][y-2] != Tileset.WALL;
-        }else if(x == Ax + 2 && y==Ay -2) {
-            return input[x][y-1] != Tileset.WALL && input[x -1][y] != Tileset.WALL && input[x -1][y - 1] != Tileset.WALL && input[x -1][y -2] != Tileset.WALL;
+        } else if (x == avatarX + 2 && y == avatarY + 2) {
+            return input[x][y - 1] != Tileset.WALL && input[x - 1][y] != Tileset.WALL && input[x - 1][y - 1] != Tileset.WALL && input[x - 1][y - 2] != Tileset.WALL;
+        } else if (x == avatarX - 2 && y == avatarY - 2) {
+            return input[x][y + 1] != Tileset.WALL && input[x + 1][y] != Tileset.WALL && input[x + 1][y - 1] != Tileset.WALL && input[x + 1][y - 2] != Tileset.WALL;
+        } else if (x == avatarX + 2 && y == avatarY - 2) {
+            return input[x][y - 1] != Tileset.WALL && input[x - 1][y] != Tileset.WALL && input[x - 1][y - 1] != Tileset.WALL && input[x - 1][y - 2] != Tileset.WALL;
         }
         return true;
     }

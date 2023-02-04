@@ -1,7 +1,5 @@
 package byow.Core;
 import byow.InputDemo.InputSource;
-import byow.InputDemo.KeyboardInputSource;
-import byow.InputDemo.StringInputDevice;
 import byow.Networking.BYOWServer;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
@@ -51,7 +49,7 @@ public class RemoteGame {
     private boolean isSubSubMenu;
 
     private boolean WinOrLose;
-    private boolean Hammer;
+    private boolean hasHammer;
     private int LenAtTranported;
 
     private int NumRooms;
@@ -66,6 +64,7 @@ public class RemoteGame {
 
     private int NumHammer;
     private int health;
+    private int avatarSelector;
     public RemoteGame() {
         this.width = 60;
         this.height = 45;
@@ -81,7 +80,7 @@ public class RemoteGame {
         this.ter = new TERenderer();
         this.keys = "";
         this.NumRooms = 0;
-        this.Hammer = false;
+        this.hasHammer = false;
         this.NumHammer = 0;
         this.NumCoin = 0;
         this.setRoom = false;
@@ -91,6 +90,7 @@ public class RemoteGame {
         this.FiatLux = false;
         this.health = 10;
         this.LenAtTranported = 0;
+        this.avatarSelector = 1;
 
     }
     public void StartGame(BYOWServer Server) {
@@ -140,7 +140,7 @@ public class RemoteGame {
                     isSubMenu = false;
                     this.isMenu = false;
                     this.inGame = true;
-                    map = new Map(SEED, this.NumRooms, this.setRoom, this.MapHeight, this.setHeight, this.MapWidth, this.setWidth, this.Hammer, this.WinOrLose);
+                    map = new Map(SEED, this.NumRooms, this.setRoom, this.MapHeight, this.setHeight, this.MapWidth, this.setWidth, this.hasHammer, this.WinOrLose, this.avatarSelector);
                     world = map.MapGenerator();
                     if (toChangeName) {
                         map.ChangeName(AvatarName);
@@ -257,19 +257,19 @@ public class RemoteGame {
                         else if (choice == '5') {
                             this.isSubSubMenu = true;
                             this.isSubMenu = false;
-                            Hammer(Server,String.valueOf(this.Hammer));
+                            Hammer(Server,String.valueOf(this.hasHammer));
                             while(Server.clientHasKeyTyped()) {
                                 char c = Server.clientNextKeyTyped();
                                 if (c == '1') {
-                                    this.Hammer = true;
+                                    this.hasHammer = true;
                                     Hammer(Server,String.valueOf(c));
                                 }
                                 else if(c == '2') {
-                                    this.Hammer = false;
+                                    this.hasHammer = false;
                                     Hammer(Server,String.valueOf(c));
                                 }
                                 else if (c == '/'){
-                                    Hammer(Server,String.valueOf(this.Hammer));
+                                    Hammer(Server,String.valueOf(this.hasHammer));
                                     break;
                                 }
                             }
@@ -286,23 +286,61 @@ public class RemoteGame {
                             //break;
                         }
                     }
-                }
-                else if (!isSubMenu && (command == 'A'||command == 'a')){
+                } else if (!isSubMenu && (command == 'A'||command == 'a')){
                     this.isSubMenu = true;
-                    NameInput(Server,"");
-                    AvatarName = "";
-                    while(Server.clientHasKeyTyped()) {
-                        char name = Server.clientNextKeyTyped();
-                        if (name != '/') {
-                            AvatarName += Character.toLowerCase(name) ;
-                            NameInput(Server,AvatarName);
-                        } else {
-                            toChangeName = AvatarName.length() > 0;
-                            break;
-                        }
-                        NameInput(Server,AvatarName);
-                    }
+                    DrawAvatar(Server);
+                    while(inputSource.possibleNextInput()) {
+                        char selector = inputSource.getNextKey();
+                        if (selector == '1') {
+                            this.isSubSubMenu = true;
+                            this.isSubMenu = false;
+                            NameInput(Server, this.AvatarName);
+                            AvatarName = "";
+                            while(inputSource.possibleNextInput()) {
+                                char name = inputSource.getNextKey();
+                                if (name != '/') {
+                                    AvatarName += Character.toLowerCase(name) ;
+                                    NameInput(Server, AvatarName);
+                                } else {
+                                    toChangeName = AvatarName.length() > 0;
+                                    break;
+                                }
+                                NameInput(Server, AvatarName);
+                            }
+                        } else if (selector == '2') {
+                            this.isSubSubMenu = true;
+                            this.isSubMenu = false;
+                            DrawAvatarAppearence(Server,String.valueOf(this.avatarSelector));
+                            while(inputSource.possibleNextInput()) {
+                                char c = inputSource.getNextKey();
+                                if (c == '1') {
+                                    this.avatarSelector = 1;
+                                    DrawAvatarAppearence(Server,String.valueOf(this.avatarSelector));
+                                }
+                                else if(c == '2') {
+                                    this.avatarSelector = 2;
+                                    DrawAvatarAppearence(Server,String.valueOf(this.avatarSelector));
+                                }else if(c == '3') {
+                                    this.avatarSelector = 3;
+                                    DrawAvatarAppearence(Server,String.valueOf(this.avatarSelector));
+                                }
+                                else if (c == '/'){
+                                    DrawAvatarAppearence(Server,String.valueOf(this.avatarSelector));
+                                    break;
+                                }
+                            }
 
+                        } else if (!isSubSubMenu && (selector == 'Q'||selector == 'q')){
+                            DrawMenu(Server);
+                            this.isSubMenu = false;
+                            break;
+                        } else if (isSubSubMenu && (selector == 'Q'||selector == 'q')) {
+                            DrawAvatar(Server);
+                            this.isSubSubMenu = false;
+                            this.isSubMenu = true;
+                            //break;
+                        }
+                    }
                 }
                 else if (!isSubMenu && command == 'L'||command == 'l') {
                     if(!Load()) {
@@ -312,7 +350,7 @@ public class RemoteGame {
                     isSubMenu = false;
                     this.isMenu = false;
                     this.inGame = true;
-                    map = new Map(SEED, this.NumRooms, this.setRoom, this.MapHeight, this.setHeight, this.MapWidth, this.setWidth, this.Hammer, this.WinOrLose);
+                    map = new Map(SEED, this.NumRooms, this.setRoom, this.MapHeight, this.setHeight, this.MapWidth, this.setWidth, this.hasHammer, this.WinOrLose, this.avatarSelector);
                     world = map.MapGenerator();
                     if (toChangeName) {
                         map.ChangeName(AvatarName);
@@ -428,6 +466,40 @@ public class RemoteGame {
         StdDraw.show();
         Server.sendCanvas();
     }
+
+    public void DrawAvatar(BYOWServer Server) {
+        StdDraw.clear(Color.BLACK);
+        StdDraw.setPenColor(Color.WHITE);
+        Font fontBig = new Font("Monaco", Font.BOLD, 40);
+        StdDraw.setFont(fontBig);
+        StdDraw.text(width / 2, height /4 * 3, "Avatar Customize");
+        Font fontSmall = new Font("Monaco", Font.PLAIN, 30);
+        StdDraw.setFont(fontSmall);
+        StdDraw.text(width / 2, height / 2.5, "Change User Name (1)");
+        StdDraw.text(width / 2, height / 2.9, "Change Avatar Appearance (2)");
+        StdDraw.show();
+        Server.sendCanvas();
+    }
+
+    public void DrawAvatarAppearence(BYOWServer Server, String input) {
+        StdDraw.clear(Color.BLACK);
+        StdDraw.setPenColor(Color.WHITE);
+        Font fontBig = new Font("Monaco", Font.BOLD, 30);
+
+        StdDraw.setFont(fontBig);
+        StdDraw.text(width / 2, height / 4 * 3, "Select your avatar: (End with /)");
+        StdDraw.text(width / 2, height / 5.5, "Press Q to quit");
+        Font fontSmall = new Font("Monaco", Font.PLAIN, 30);
+        StdDraw.setFont(fontSmall);
+        StdDraw.text(this.width / 2, this.height / 2, input);
+        StdDraw.text(width / 2, height / 2.5, "(1) @");
+        StdDraw.text(width / 2, height / 2.9, "(2) ☺");
+        StdDraw.text(width / 2, height / 3.5, "(3) ♡");
+
+        StdDraw.show();
+        Server.sendCanvas();
+    }
+
     public void HUD(BYOWServer Server, TETile[][] input) {
         //StdDraw.clear(Color.BLACK);
         StdDraw.setPenColor(Color.WHITE);
@@ -559,7 +631,9 @@ public class RemoteGame {
             writer.println(setRoom);
             writer.println(NumRooms);
             writer.println(WinOrLose);
-            writer.println(Hammer);
+            writer.println(hasHammer);
+            writer.println(this.avatarSelector);
+            writer.println(this.FiatLux);
             writer.close();
         } catch (ClassCastException excp) {
             throw new IllegalArgumentException(excp.getMessage());
@@ -585,7 +659,9 @@ public class RemoteGame {
             this.setRoom = Boolean.parseBoolean(myReader.nextLine());
             this.NumRooms = Integer.parseInt(myReader.nextLine());
             this.WinOrLose = Boolean.parseBoolean(myReader.nextLine());
-            this.Hammer = Boolean.parseBoolean(myReader.nextLine());
+            this.hasHammer = Boolean.parseBoolean(myReader.nextLine());
+            this.avatarSelector = Integer.parseInt(myReader.nextLine());
+            this.FiatLux = Boolean.parseBoolean(myReader.nextLine());
             myReader.close();
             //generate world with seed
             //for char in game string, process char

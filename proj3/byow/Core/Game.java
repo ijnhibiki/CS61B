@@ -46,7 +46,7 @@ public class Game {
 
     private Map map;
     private boolean isBlocked;
-    private String AvatarName;
+    private String avatarName;
 
     private boolean readySave;
 
@@ -54,22 +54,23 @@ public class Game {
 
     private boolean isSubSubMenu;
 
-    private boolean WinOrLose;
-    private boolean Hammer;
-    private int LenAtTranported;
+    private boolean winOrLose;
+    private boolean hasHammer;
+    private int lenAtTranported;
 
-    private int NumRooms;
+    private int numRooms;
     private boolean setRoom;
     private boolean setHeight;
     private boolean setWidth;
-    private int MapHeight;
-    private int MapWidth;
-    private boolean FiatLux;
+    private int mapHeight;
+    private int mapWidth;
+    private boolean fiatLux;
 
-    private int NumCoin;
+    private int numCoin;
 
-    private int NumHammer;
+    private int numHammer;
     private int health;
+    private int avatarSelector;
 
 
 
@@ -79,33 +80,34 @@ public class Game {
     public Game() {
         this.width = 60;
         this.height = 45;
-        this.MapHeight = HEIGHT;
-        this.MapWidth = WIDTH;
+        this.mapHeight = HEIGHT;
+        this.mapWidth = WIDTH;
         this.isMenu = true;
         this.isSubMenu = false;
         this.isBlocked = false;
         this.isSeed = false;
         this.readySave = false;
         this.inGame = false;
-        this.AvatarName = "";
+        this.avatarName = "";
         this.ter = new TERenderer();
         this.keys = "";
-        this.NumRooms = 0;
-        this.Hammer = false;
-        this.NumHammer = 0;
-        this.NumCoin = 0;
+        this.numRooms = 0;
+        this.hasHammer = false;
+        this.numHammer = 0;
+        this.numCoin = 0;
         this.setRoom = false;
         this.setWidth = false;
         this.setHeight = false;
         this.isSubSubMenu = false;
-        this.FiatLux = false;
+        this.fiatLux = false;
         this.health = 10;
-        this.LenAtTranported = 0;
+        this.lenAtTranported = 0;
+        this.avatarSelector = 1;
 
     }
 
-    public TETile[][] StartGame(boolean ShowScreen, String input) {
-        if (ShowScreen) {
+    public TETile[][] startGame(boolean showScreen, String input) {
+        if (showScreen) {
             StdDraw.setCanvasSize(width * 16, height * 16);
             Font font = new Font("Monaco", Font.BOLD, 30);
             StdDraw.setFont(font);
@@ -118,50 +120,48 @@ public class Game {
         } else {
             inputSource = new StringInputDevice(input);
         }
-
-        while(inputSource.possibleNextInput()) {
+        while (inputSource.possibleNextInput()) {
             char command = inputSource.getNextKey();
             if (this.isMenu) {
-                if (isSubMenu && (command == 'Q'|| command == 'q')) {
-                    if (ShowScreen) {
+                if (isSubMenu && (command == 'Q' || command == 'q')) {
+                    if (showScreen) {
                         DrawMenu();
                         this.isSubMenu = false;
                     }
-                } else if (!isSubMenu && (command == 'Q'|| command == 'q')) {
+                } else if (!isSubMenu && (command == 'Q' || command == 'q')) {
                     System.exit(0);
-                } else if (!isSubMenu && command == 'N'|| command == 'n') {
+                } else if (!isSubMenu && command == 'N' || command == 'n') {
                     SEED = 0;
                     isSubMenu = true;
                     isSeed = true;
-                    if(ShowScreen) {
+                    if (showScreen) {
                         SeedInput("");
                     }
-                } else if (isSubMenu && (command == 'S'|| command == 's')) {
+                } else if (isSubMenu && (command == 'S' || command == 's')) {
                     isSubMenu = false;
                     this.isMenu = false;
                     this.inGame = true;
-                    map = new Map(SEED, this.NumRooms, this.setRoom, this.MapHeight, this.setHeight, this.MapWidth, this.setWidth, this.Hammer, this.WinOrLose);
+                    map = new Map(SEED, this.numRooms, this.setRoom, this.mapHeight, this.setHeight, this.mapWidth, this.setWidth, this.hasHammer, this.winOrLose, this.avatarSelector);
                     world = map.MapGenerator();
                     if (toChangeName) {
-                        map.ChangeName(AvatarName);
+                        map.ChangeName(avatarName);
                     } else {
-                        AvatarName = "Golden Bear";
-                        map.ChangeName(AvatarName);
+                        avatarName = "Golden Bear";
+                        map.ChangeName(avatarName);
                     }
                     if (this.SEED == 247) {
-                        AvatarName = "Berkelium";
-                        map.ChangeName(AvatarName);
-                        this.NumHammer = 200;
+                        avatarName = "Berkelium";
+                        map.ChangeName(avatarName);
+                        this.numHammer = 200;
                         map.changeHammer(200);
 
                     }
-                    if (ShowScreen) {
-                        ter.initialize(this.MapWidth, this.MapHeight + 2, false, null);
-                        ter.renderFrame(world, map.AvatarX(), map.AvatarY(), this.FiatLux, false,null);
+                    if (showScreen) {
+                        ter.initialize(this.mapWidth, this.mapHeight + 2, false, null);
+                        ter.renderFrame(world, map.AvatarX(), map.AvatarY(), this.fiatLux, false, null);
                         HUD(world);
                     }
-                }
-                else if (!isSubMenu && (command == 'S'|| command == 's')) {
+                } else if (!isSubMenu && (command == 'S'|| command == 's')) {
                     this.isSubMenu = true;
                     DrawSetting();
                     while(inputSource.possibleNextInput()) {
@@ -170,23 +170,23 @@ public class Game {
                             this.isSubSubMenu = true;
                             this.isSubMenu = false;
                             int temp = 0;
-                            MapSize(String.valueOf(this.MapWidth), 1);
+                            mapSize(String.valueOf(this.mapWidth), 1);
                             while(inputSource.possibleNextInput()) {
                                 char c = inputSource.getNextKey();
                                 if (c != '/') {
                                     if (Character.isDigit(c)) {
                                         temp= temp*10 + Character.getNumericValue(c);
-                                        if(ShowScreen) {
-                                            MapSize(Integer.toString(temp),1);
+                                        if(showScreen) {
+                                            mapSize(Integer.toString(temp),1);
                                         }
                                     }
                                 } else {
                                     if (!(temp == 0)) {
-                                        this.MapWidth = temp;
+                                        this.mapWidth = temp;
                                         this.setWidth = true;
-                                        MapSize(Integer.toString(temp),1);
+                                        mapSize(Integer.toString(temp),1);
                                     } else {
-                                        MapSize(Integer.toString(this.MapWidth),1);
+                                        mapSize(Integer.toString(this.mapWidth),1);
                                     }
                                     break;
                                 }
@@ -197,24 +197,24 @@ public class Game {
                             this.isSubSubMenu = true;
                             this.isSubMenu = false;
                             int temp = 0;
-                            MapSize(String.valueOf(this.MapHeight), 2);
+                            mapSize(String.valueOf(this.mapHeight), 2);
                             while(inputSource.possibleNextInput()) {
                                 char c = inputSource.getNextKey();
                                 if (c != '/') {
                                     if (Character.isDigit(c)) {
                                         temp = temp *10 + Character.getNumericValue(c);
-                                        if(ShowScreen) {
-                                            MapSize(Integer.toString(temp),2);
+                                        if(showScreen) {
+                                            mapSize(Integer.toString(temp),2);
                                         }
                                     }
                                 } else {
 
                                     if (!(temp == 0)) {
-                                        this.MapHeight = temp;
+                                        this.mapHeight = temp;
                                         this.setHeight = true;
-                                        MapSize(Integer.toString(temp),2);
+                                        mapSize(Integer.toString(temp),2);
                                     } else  {
-                                        MapSize(Integer.toString(this.MapHeight),2);
+                                        mapSize(Integer.toString(this.mapHeight),2);
                                     }
 
                                     break;
@@ -224,18 +224,18 @@ public class Game {
                         else if (choice == '3') {
                             this.isSubSubMenu = true;
                             this.isSubMenu = false;
-                            NumRoom("Random");
+                            numRoom("Random");
                             while(inputSource.possibleNextInput()) {
                                 char c = inputSource.getNextKey();
                                 if (c != '/') {
                                     if (Character.isDigit(c)) {
-                                        this.NumRooms = this.NumRooms *10 + Character.getNumericValue(c);
-                                        if(ShowScreen) {
-                                            NumRoom(Integer.toString(this.NumRooms));
+                                        this.numRooms = this.numRooms *10 + Character.getNumericValue(c);
+                                        if(showScreen) {
+                                            numRoom(Integer.toString(this.numRooms));
                                         }
                                     }
                                 } else {
-                                    NumRoom(Integer.toString(this.NumRooms));
+                                    numRoom(Integer.toString(this.numRooms));
                                     this.setRoom = true;
                                     break;
                                 }
@@ -244,19 +244,19 @@ public class Game {
                         else if (choice == '4') {
                             this.isSubSubMenu = true;
                             this.isSubMenu = false;
-                            WinOrLose(String.valueOf(this.WinOrLose));
+                            winOrLose(String.valueOf(this.winOrLose));
                             while(inputSource.possibleNextInput()) {
                                 char c = inputSource.getNextKey();
                                 if (c == '1') {
-                                    this.WinOrLose = true;
-                                    WinOrLose(String.valueOf(c));
+                                    this.winOrLose = true;
+                                    winOrLose(String.valueOf(c));
                                 }
                                 else if(c == '2') {
-                                    this.WinOrLose = false;
-                                    WinOrLose(String.valueOf(c));
+                                    this.winOrLose = false;
+                                    winOrLose(String.valueOf(c));
                                 }
                                 else if (c == '/'){
-                                    WinOrLose(String.valueOf(this.WinOrLose));
+                                    winOrLose(String.valueOf(this.winOrLose));
                                     break;
                                 }
                             }
@@ -264,29 +264,27 @@ public class Game {
                         else if (choice == '5') {
                             this.isSubSubMenu = true;
                             this.isSubMenu = false;
-                            Hammer(String.valueOf(this.Hammer));
+                            hammer(String.valueOf(this.hasHammer));
                             while(inputSource.possibleNextInput()) {
                                 char c = inputSource.getNextKey();
                                 if (c == '1') {
-                                    this.Hammer = true;
-                                    Hammer(String.valueOf(c));
+                                    this.hasHammer = true;
+                                    hammer(String.valueOf(c));
                                 }
                                 else if(c == '2') {
-                                    this.Hammer = false;
-                                    Hammer(String.valueOf(c));
+                                    this.hasHammer = false;
+                                    hammer(String.valueOf(c));
                                 }
                                 else if (c == '/'){
-                                    Hammer(String.valueOf(this.Hammer));
+                                    hammer(String.valueOf(this.hasHammer));
                                     break;
                                 }
                             }
-                        }
-                        else if (!isSubSubMenu && (choice == 'Q'||choice == 'q')){
+                        } else if (!isSubSubMenu && (choice == 'Q'||choice == 'q')){
                             DrawMenu();
                             this.isSubMenu = false;
                             break;
-                        }
-                        else if (isSubSubMenu && (choice == 'Q'||choice == 'q')) {
+                        } else if (isSubSubMenu && (choice == 'Q'||choice == 'q')) {
                             DrawSetting();
                             this.isSubSubMenu = false;
                             this.isSubMenu = true;
@@ -296,39 +294,78 @@ public class Game {
                 }
                 else if (!isSubMenu && (command == 'A'||command == 'a')){
                     this.isSubMenu = true;
-                    NameInput("");
-                    AvatarName = "";
+                    DrawAvatar();
                     while(inputSource.possibleNextInput()) {
-                        char name = inputSource.getNextKey();
-                        if (name != '/') {
-                            AvatarName += Character.toLowerCase(name) ;
-                            NameInput(AvatarName);
-                        } else {
-                            toChangeName = AvatarName.length() > 0;
-                            break;
-                        }
-                        NameInput(AvatarName);
-                    }
+                        char selector = inputSource.getNextKey();
+                        if (selector == '1') {
+                            this.isSubSubMenu = true;
+                            this.isSubMenu = false;
+                            nameInput(this.avatarName);
+                            avatarName = "";
+                            while(inputSource.possibleNextInput()) {
+                                char name = inputSource.getNextKey();
+                                if (name != '/') {
+                                    avatarName += Character.toLowerCase(name) ;
+                                    nameInput(avatarName);
+                                } else {
+                                    toChangeName = avatarName.length() > 0;
+                                    break;
+                                }
+                                nameInput(avatarName);
+                            }
+                        } else if (selector == '2') {
+                            this.isSubSubMenu = true;
+                            this.isSubMenu = false;
+                            DrawAvatarAppearence(String.valueOf(this.avatarSelector));
+                            while(inputSource.possibleNextInput()) {
+                                char c = inputSource.getNextKey();
+                                if (c == '1') {
+                                    this.avatarSelector = 1;
+                                    DrawAvatarAppearence(String.valueOf(this.avatarSelector));
+                                }
+                                else if(c == '2') {
+                                    this.avatarSelector = 2;
+                                    DrawAvatarAppearence(String.valueOf(this.avatarSelector));
+                                }else if(c == '3') {
+                                    this.avatarSelector = 3;
+                                    DrawAvatarAppearence(String.valueOf(this.avatarSelector));
+                                }
+                                else if (c == '/'){
+                                    DrawAvatarAppearence(String.valueOf(this.avatarSelector));
+                                    break;
+                                }
+                            }
 
+                        } else if (!isSubSubMenu && (selector == 'Q'||selector == 'q')){
+                            DrawMenu();
+                            this.isSubMenu = false;
+                            break;
+                        } else if (isSubSubMenu && (selector == 'Q'||selector == 'q')) {
+                            DrawAvatar();
+                            this.isSubSubMenu = false;
+                            this.isSubMenu = true;
+                            //break;
+                        }
+                    }
                 }
                 else if (!isSubMenu && command == 'L'||command == 'l') {
-                    if(!Load()) {
+                    if(!load()) {
                         System.exit(0);
                     }
                     isSubMenu = false;
                     this.isMenu = false;
                     this.inGame = true;
-                    map = new Map(SEED, this.NumRooms, this.setRoom, this.MapHeight, this.setHeight, this.MapWidth, this.setWidth, this.Hammer, this.WinOrLose);
+                    map = new Map(SEED, this.numRooms, this.setRoom, this.mapHeight, this.setHeight, this.mapWidth, this.setWidth, this.hasHammer, this.winOrLose, this.avatarSelector);
                     world = map.MapGenerator();
                     if (toChangeName) {
-                        map.ChangeName(AvatarName);
+                        map.ChangeName(avatarName);
                     }
                     for (int i = 0; i < this.keys.length(); i++) {
                         move(this.keys.charAt(i));
                     }
-                    if (ShowScreen) {
-                        ter.initialize(this.MapWidth, this.MapHeight + 2, false,null);
-                        ter.renderFrame(world, map.AvatarX(), map.AvatarY(), this.FiatLux, false,null);
+                    if (showScreen) {
+                        ter.initialize(this.mapWidth, this.mapHeight + 2, false,null);
+                        ter.renderFrame(world, map.AvatarX(), map.AvatarY(), this.fiatLux, false,null);
                         HUD(world);
                     }
 
@@ -336,7 +373,7 @@ public class Game {
                 else if (isSeed){
                     if (Character.isDigit(command)) {
                         SEED = SEED*10 + Character.getNumericValue(command);
-                        if(ShowScreen) {
+                        if(showScreen) {
                             SeedInput(Long.toString(SEED));
                         }
                     }
@@ -352,38 +389,40 @@ public class Game {
                     if(!map.isActive() && world[map.PX1()][map.PY1()] != Tileset.ClOSE_PORTAL) {
                         world[map.PX1()][map.PY1()] = Tileset.ClOSE_PORTAL;
                         world[map.PX2()][map.PY2()] = Tileset.ClOSE_PORTAL;
-                        this.LenAtTranported = keys.length();
+                        this.lenAtTranported = keys.length();
                     }
-                    this.NumHammer = map.NumHammer();
-                    if (keys.length() >= (LenAtTranported + 5) && !map.isActive()) {
+                    this.numHammer = map.NumHammer();
+                    if (keys.length() >= (lenAtTranported + 5) && !map.isActive()) {
                         world[map.PX1()][map.PY1()] = Tileset.OPENED_PORTAL;
                         world[map.PX2()][map.PY2()] = Tileset.OPENED_PORTAL;
                         map.toActive();
-                        this.LenAtTranported = 0;
+                        this.lenAtTranported = 0;
                     }
                 }
                 else if (!readySave && command == ':') {
                     this.readySave = true;
                 } else if (readySave && (command == 'Q'|| command == 'q')) {
-                    SaveFile();
-                    System.exit(0);
+                    saveFile();
+                    if(showScreen) {
+                        System.exit(0);
+                    }
                 }  else if (command == 'l' || command == 'L') {
-                    this.FiatLux = !this.FiatLux;
+                    this.fiatLux = !this.fiatLux;
                 }
 
-                this.NumCoin = map.NumCoin();
+                this.numCoin = map.NumCoin();
                 this.health = map.HP();
 
-                if (ShowScreen) {
-                    ter.renderFrame(world, map.AvatarX(), map.AvatarY(), this.FiatLux, false,null);
+                if (showScreen) {
+                    ter.renderFrame(world, map.AvatarX(), map.AvatarY(), this.fiatLux, false,null);
                     HUD(world);
                 }
                 if (this.health == 0) {
-                    Lose();
+                    lose();
                     System.exit(0);
                 }
-                if(this.NumCoin == 7) {
-                    Win();
+                if(this.numCoin == 7) {
+                    win();
                     System.exit(0);
                 }
 
@@ -437,78 +476,109 @@ public class Game {
         StdDraw.text(width / 2, height / 5.7, "Hammer (5)");
         StdDraw.show();
     }
+
+    public void DrawAvatar() {
+        StdDraw.clear(Color.BLACK);
+        StdDraw.setPenColor(Color.WHITE);
+        Font fontBig = new Font("Monaco", Font.BOLD, 40);
+        StdDraw.setFont(fontBig);
+        StdDraw.text(width / 2, height /4 * 3, "Avatar Customize");
+        Font fontSmall = new Font("Monaco", Font.PLAIN, 30);
+        StdDraw.setFont(fontSmall);
+        StdDraw.text(width / 2, height / 2.5, "Change User Name (1)");
+        StdDraw.text(width / 2, height / 2.9, "Change Avatar Appearance (2)");
+        StdDraw.show();
+    }
+
+    public void DrawAvatarAppearence(String input) {
+        StdDraw.clear(Color.BLACK);
+        StdDraw.setPenColor(Color.WHITE);
+        Font fontBig = new Font("Monaco", Font.BOLD, 30);
+
+        StdDraw.setFont(fontBig);
+        StdDraw.text(width / 2, height / 4 * 3, "Select your avatar: (End with /)");
+        StdDraw.text(width / 2, height / 5.5, "Press Q to quit");
+        Font fontSmall = new Font("Monaco", Font.PLAIN, 30);
+        StdDraw.setFont(fontSmall);
+        StdDraw.text(this.width / 2, this.height / 2, input);
+        StdDraw.text(width / 2, height / 2.5, "(1) @");
+        StdDraw.text(width / 2, height / 2.9, "(2) ☺");
+        StdDraw.text(width / 2, height / 3.5, "(3) ♡");
+
+        StdDraw.show();
+    }
     public void HUD(TETile[][] input) {
         //StdDraw.clear(Color.BLACK);
         StdDraw.setPenColor(Color.WHITE);
         Font fontSmall = new Font("Monaco", Font.PLAIN, 20);
         StdDraw.setFont(fontSmall);
-        StdDraw.textLeft(0 ,this.MapHeight + 1, map.AvatarName());
-        StdDraw.textRight(23 ,this.MapHeight + 1, CurrentTime());
+        StdDraw.textLeft(0 ,this.mapHeight + 1, map.AvatarName());
+        StdDraw.textRight(23 ,this.mapHeight + 1, currentTime());
         if(!isBlocked) {
-            StdDraw.text(27,this.MapHeight + 1, "Go bears!");
+            StdDraw.text(27,this.mapHeight + 1, "Go bears!");
 
         } else {
-            StdDraw.text(27,this.MapHeight + 1, "Go back!");
+            StdDraw.text(27,this.mapHeight + 1, "Go back!");
         }
-        StdDraw.text(35,this.MapHeight + 1, "Hammer: " + this.NumHammer);
-        StdDraw.text(42,this.MapHeight + 1, "Coin: " + this.NumCoin);
-        StdDraw.text(53,this.MapHeight + 1, "l :open/close light");
-        StdDraw.text(65,this.MapHeight + 1, "health: " + this.health);
+        StdDraw.text(35,this.mapHeight + 1, "Hammer: " + this.numHammer);
+        StdDraw.text(42,this.mapHeight + 1, "Coin: " + this.numCoin);
+        StdDraw.text(53,this.mapHeight + 1, "l :open/close light");
+        StdDraw.text(65,this.mapHeight + 1, "health: " + this.health);
         int MouseX = (int) StdDraw.mouseX();
         int MouseY = (int) StdDraw.mouseY();
-        if (MouseX >=0 && MouseX < this.MapWidth && MouseY >=0 && MouseY < this.MapHeight) {
-            if (this.FiatLux) {
-                StdDraw.textRight(this.MapWidth ,this.MapHeight + 1, input[MouseX][MouseY].description());
+        if (MouseX >=0 && MouseX < this.mapWidth && MouseY >=0 && MouseY < this.mapHeight) {
+            if (this.fiatLux) {
+                StdDraw.textRight(this.mapWidth, this.mapHeight + 1, input[MouseX][MouseY].description());
             } else {
-                if (Math.abs(MouseX - map.AvatarX()) >=4 || Math.abs(MouseY - map.AvatarY()) >=4) {
-                    StdDraw.textRight(this.MapWidth ,this.MapHeight + 1, "???");
+                if (Math.abs(MouseX - map.AvatarX()) >= 4 || Math.abs(MouseY - map.AvatarY()) >= 4) {
+                    StdDraw.textRight(this.mapWidth, this.mapHeight + 1, "???");
                 } else {
-                    StdDraw.textRight(this.MapWidth ,this.MapHeight + 1, input[MouseX][MouseY].description());
+                    StdDraw.textRight(this.mapWidth, this.mapHeight + 1, input[MouseX][MouseY].description());
                 }
             }
 
         } else {
-            StdDraw.textRight(this.MapWidth ,this.MapHeight + 1, "???");
+            StdDraw.textRight(this.mapWidth, this.mapHeight + 1, "???");
         }
-        StdDraw.line(0,this.MapHeight + 0.5, this.MapWidth + 0.5, this.MapHeight + 0.5);
+        StdDraw.line(0, this.mapHeight + 0.5, this.mapWidth + 0.5, this.mapHeight + 0.5);
 
         StdDraw.show(100);
     }
-    public void Win() {
+    public void win() {
         StdDraw.clear(Color.BLACK);
         StdDraw.setPenColor(Color.WHITE);
         Font fontBig = new Font("Monaco", Font.BOLD, 40);
         StdDraw.setFont(fontBig);
-        StdDraw.text(this.MapWidth / 2, this.MapHeight / 2, "You Win!");
+        StdDraw.text(this.mapWidth / 2, this.mapHeight / 2, "You Win!");
         StdDraw.show();
         StdDraw.pause(3000);
 
     }
-    public void Lose() {
+    public void lose() {
         StdDraw.clear(Color.BLACK);
         StdDraw.setPenColor(Color.WHITE);
         Font fontBig = new Font("Monaco", Font.BOLD, 40);
         StdDraw.setFont(fontBig);
-        StdDraw.text(this.MapWidth / 2, this.MapHeight / 2, "You Lose!");
+        StdDraw.text(this.mapWidth / 2, this.mapHeight / 2, "You Lose!");
         StdDraw.show();
         StdDraw.pause(3000);
 
     }
 
-    public String CurrentTime() {
+    public String currentTime() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
         return dtf.format(now);
     }
 
 
-    public void NameInput(String input) {
+    public void nameInput(String input) {
         StdDraw.clear(Color.BLACK);
         StdDraw.setPenColor(Color.WHITE);
         Font fontBig = new Font("Monaco", Font.BOLD, 40);
         StdDraw.setFont(fontBig);
-        StdDraw.text(width / 2, height /4 * 3, "Enter your name: (End with /)");
-        StdDraw.text(width / 2, height /4, "Press Q to quit");
+        StdDraw.text(width / 2, height / 4 * 3, "Enter your name: (End with /)");
+        StdDraw.text(width / 2, height / 4, "Press Q to quit");
         Font fontSmall = new Font("Monaco", Font.PLAIN, 30);
         StdDraw.setFont(fontSmall);
         StdDraw.text(this.width / 2, this.height / 2, input);
@@ -516,30 +586,30 @@ public class Game {
     }
 
     public void move(Character command) {
-        if (command == 'D'||command == 'd') {
-            this.isBlocked = map.moveAvatar(world,1);
+        if (command == 'D' || command == 'd') {
+            this.isBlocked = map.moveAvatar(world, 1);
 
         }
-        if (command == 'A'||command == 'a') {
-            this.isBlocked = map.moveAvatar(world,2);
+        if (command == 'A' || command == 'a') {
+            this.isBlocked = map.moveAvatar(world, 2);
 
         }
-        if (command == 'W'||command == 'w') {
-            this.isBlocked = map.moveAvatar(world,3);
+        if (command == 'W' || command == 'w') {
+            this.isBlocked = map.moveAvatar(world, 3);
 
         }
-        if (command == 'S'||command == 's') {
-            this.isBlocked = map.moveAvatar(world,4);
+        if (command == 'S' || command == 's') {
+            this.isBlocked = map.moveAvatar(world, 4);
 
         }
 
     }
 
     public boolean isMoveCommand(Character input) {
-        return input == 'w' || input == 'W' || input == 's' ||input == 'S' || input == 'a' || input == 'A' || input == 'd' || input == 'D';
+        return input == 'w' || input == 'W' || input == 's' || input == 'S' || input == 'a' || input == 'A' || input == 'd' || input == 'D';
     }
 
-    public void SaveFile() {
+    public void saveFile() {
         File file = new File("./save.txt");
         try {
             if (file.isDirectory()) {
@@ -552,15 +622,17 @@ public class Game {
             PrintWriter writer = new PrintWriter("save.txt", StandardCharsets.UTF_8);
             writer.println(this.SEED);
             writer.println(this.keys);
-            writer.println(this.AvatarName);
+            writer.println(this.avatarName);
             writer.println(this.setWidth);
-            writer.println(this.MapWidth);
+            writer.println(this.mapWidth);
             writer.println(this.setHeight);
-            writer.println(this.MapHeight);
+            writer.println(this.mapHeight);
             writer.println(setRoom);
-            writer.println(NumRooms);
-            writer.println(WinOrLose);
-            writer.println(Hammer);
+            writer.println(numRooms);
+            writer.println(winOrLose);
+            writer.println(hasHammer);
+            writer.println(this.avatarSelector);
+            writer.println(this.fiatLux);
             writer.close();
         } catch (ClassCastException excp) {
             throw new IllegalArgumentException(excp.getMessage());
@@ -569,7 +641,7 @@ public class Game {
         }
     }
 
-    public boolean Load() {
+    public boolean load() {
         try {
             File save = new File("save.txt");
             if (!save.exists()) {
@@ -578,15 +650,17 @@ public class Game {
             Scanner myReader = new Scanner(save);
             this.SEED = Long.parseLong(myReader.nextLine());
             this.keys = myReader.nextLine();
-            this.AvatarName = myReader.nextLine();
+            this.avatarName = myReader.nextLine();
             this.setWidth = Boolean.parseBoolean(myReader.nextLine());
-            this.MapWidth = Integer.parseInt(myReader.nextLine());
+            this.mapWidth = Integer.parseInt(myReader.nextLine());
             this.setHeight = Boolean.parseBoolean(myReader.nextLine());
-            this.MapHeight = Integer.parseInt(myReader.nextLine());
+            this.mapHeight = Integer.parseInt(myReader.nextLine());
             this.setRoom = Boolean.parseBoolean(myReader.nextLine());
-            this.NumRooms = Integer.parseInt(myReader.nextLine());
-            this.WinOrLose = Boolean.parseBoolean(myReader.nextLine());
-            this.Hammer = Boolean.parseBoolean(myReader.nextLine());
+            this.numRooms = Integer.parseInt(myReader.nextLine());
+            this.winOrLose = Boolean.parseBoolean(myReader.nextLine());
+            this.hasHammer = Boolean.parseBoolean(myReader.nextLine());
+            this.avatarSelector = Integer.parseInt(myReader.nextLine());
+            this.fiatLux = Boolean.parseBoolean(myReader.nextLine());
             myReader.close();
             //generate world with seed
             //for char in game string, process char
@@ -596,7 +670,7 @@ public class Game {
         return true;
     }
 
-    public void NumRoom(String input) {
+    public void numRoom(String input) {
         StdDraw.clear(Color.BLACK);
         StdDraw.setPenColor(Color.WHITE);
         Font fontBig = new Font("Monaco", Font.BOLD, 30);
@@ -609,7 +683,7 @@ public class Game {
         StdDraw.show();
     }
 
-    public void WinOrLose(String input) {
+    public void winOrLose(String input) {
         StdDraw.clear(Color.BLACK);
         StdDraw.setPenColor(Color.WHITE);
         Font fontBig = new Font("Monaco", Font.BOLD, 20);
@@ -621,7 +695,7 @@ public class Game {
         StdDraw.text(this.width / 2, this.height / 2, input);
         StdDraw.show();
     }
-    public void Hammer(String input) {
+    public void hammer(String input) {
         StdDraw.clear(Color.BLACK);
         StdDraw.setPenColor(Color.WHITE);
         Font fontBig = new Font("Monaco", Font.BOLD, 20);
@@ -634,7 +708,7 @@ public class Game {
         StdDraw.show();
     }
 
-    public void MapSize(String input, int indicator) {
+    public void mapSize(String input, int indicator) {
         String type;
         if (indicator == 1) {
             type = "width";
@@ -652,9 +726,4 @@ public class Game {
         StdDraw.text(this.width / 2, this.height / 2, input);
         StdDraw.show();
     }
-
-
-    
-
-    //Add portals to your world which teleport the avatar.
 }
