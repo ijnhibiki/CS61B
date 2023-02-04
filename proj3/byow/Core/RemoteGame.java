@@ -7,11 +7,11 @@ import edu.princeton.cs.introcs.StdDraw;
 import java.awt.Color;
 import java.awt.Font;
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.lang.*;
 import java.nio.charset.StandardCharsets;
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;
 
 import static byow.Core.Engine.HEIGHT;
 import static byow.Core.Engine.WIDTH;
@@ -485,6 +485,7 @@ public class RemoteGame {
         Font fontSmall = new Font("Monaco", Font.PLAIN, 20);
         StdDraw.setFont(fontSmall);
         StdDraw.textLeft(0 ,this.MapHeight + 1, map.AvatarName());
+        StdDraw.textRight(23 ,this.MapHeight + 1, currentTime());
         if(!isBlocked) {
             StdDraw.text(27,this.MapHeight + 1, "Go bears!");
 
@@ -495,12 +496,34 @@ public class RemoteGame {
         StdDraw.text(42,this.MapHeight + 1, "Coin: " + this.NumCoin);
         StdDraw.text(53,this.MapHeight + 1, "l:open/close light");
         StdDraw.text(65,this.MapHeight + 1, "health: " + this.health);
+        int MouseX = (int) StdDraw.mouseX();
+        int MouseY = (int) StdDraw.mouseY();
+        if (MouseX >=0 && MouseX < this.MapWidth && MouseY >=0 && MouseY < this.MapHeight) {
+            if (this.FiatLux) {
+                StdDraw.textRight(this.MapWidth, this.MapHeight + 1, input[MouseX][MouseY].description());
+            } else {
+                if (Math.abs(MouseX - map.AvatarX()) >= 4 || Math.abs(MouseY - map.AvatarY()) >= 4) {
+                    StdDraw.textRight(this.MapWidth, this.MapHeight + 1, "???");
+                } else {
+                   StdDraw.textRight(this.MapWidth, this.MapHeight + 1, input[MouseX][MouseY].description());
+                }
+            }
+
+        } else {
+            StdDraw.textRight(this.MapWidth, this.MapHeight + 1, "???");
+        }
         StdDraw.line(0,this.MapHeight + 0.5, this.MapWidth + 0.5, this.MapHeight + 0.5);
         StdDraw.show();
         //StdDraw.pause(100);
         Server.sendCanvas();
 
     }
+    public String currentTime() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        return dtf.format(now);
+    }
+    
     public void Win(BYOWServer Server) {
         StdDraw.clear(Color.BLACK);
         StdDraw.setPenColor(Color.WHITE);
