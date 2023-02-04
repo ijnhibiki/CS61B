@@ -48,12 +48,15 @@ public class BYOWServer {
     This will not block your code
      */
     public boolean clientHasKeyTyped() {
-        try {
+        /*try {
             return in.ready();
         } catch (IOException e) {
             stopConnection();
             return false;
         }
+
+         */
+        return true;
     }
 
     /*
@@ -69,7 +72,6 @@ public class BYOWServer {
             return 'q';
         }
     }
-
     /*
     Closes all input/output streams and sockets.
      */

@@ -1,9 +1,9 @@
-package byow.TileEngine;
+package byow.TileEngineRemote;
 
 
 import byow.Networking.BYOWServer;
-import edu.princeton.cs.algs4.StdDraw;
-//import edu.princeton.cs.introcs.StdDraw;
+
+import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.*;
 
@@ -13,7 +13,7 @@ import java.awt.*;
  * messing with this renderer, unless you're trying to do something fancy like
  * allowing scrolling of the screen or tracking the avatar or something similar.
  */
-public class TERenderer {
+public class TERendererRemote {
     private static final int TILE_SIZE = 16;
     private int width;
     private int height;
@@ -97,7 +97,7 @@ public class TERenderer {
      * the screen in tiles.
      * @param world the 2D TETile[][] array to render
      */
-    public void renderFrame(TETile[][] world, int avatarX, int avatarY, boolean fiatLux, boolean remote, BYOWServer server) {
+    public void renderFrame(TETileRemote[][] world, int avatarX, int avatarY, boolean fiatLux, boolean remote, BYOWServer server) {
         int numXTiles = world.length;
         int numYTiles = world[0].length;
         StdDraw.clear(new Color(0, 0, 0));
@@ -133,7 +133,7 @@ public class TERenderer {
 
     }
 
-    public boolean lightCheck(TETile[][] input, int x, int y, int avatarX, int avatarY) {
+    public boolean lightCheck(TETileRemote[][] input, int x, int y, int avatarX, int avatarY) {
         if (x < 0 || x >= input.length || y < 0 || y >= input[0].length) {
             return false;
         }
@@ -156,45 +156,45 @@ public class TERenderer {
     }
 
 
-    public boolean lightCheck2(TETile[][] input, int x, int y, int avatarX, int avatarY) {
+    public boolean lightCheck2(TETileRemote[][] input, int x, int y, int avatarX, int avatarY) {
         if (x >= avatarX - 1 && x <= avatarX + 1 && y >= avatarY - 1 && y <= avatarY + 1) {
             return true;
         } else if (y >= avatarY + 2 && x >= avatarX - 1 && x <= avatarX + 1) {
             for (int i = y - 1; i > avatarY; i--) {
-                if (input[x][i] == Tileset.WALL) {
+                if (input[x][i] == TilesetRemote.WALL) {
                     return false;
                 }
             }
             return true;
         } else if (y <= avatarY - 2 && x >= avatarX - 1 && x <= avatarX + 1) {
             for (int i = y + 1; i < avatarY; i++) {
-                if (input[x][i] == Tileset.WALL) {
+                if (input[x][i] == TilesetRemote.WALL) {
                     return false;
                 }
             }
             return true;
         } else if (x >= avatarX + 2 && y >= avatarY - 1 && y <= avatarY + 1) {
             for (int i = x - 1; i > avatarX; i--) {
-                if (input[i][y] == Tileset.WALL) {
+                if (input[i][y] == TilesetRemote.WALL) {
                     return false;
                 }
             }
             return true;
         } else if (x <= avatarX - 2 && y >= avatarY - 1 && y <= avatarY + 1) {
             for (int i = x + 1; i < avatarX; i++) {
-                if (input[i][y] == Tileset.WALL) {
+                if (input[i][y] == TilesetRemote.WALL) {
                     return false;
                 }
             }
             return true;
         } else if (x == avatarX - 2 && y == avatarY + 2) {
-            return input[x][y - 1] != Tileset.WALL && input[x + 1][y] != Tileset.WALL && input[x + 1][y - 1] != Tileset.WALL && input[x + 1][y - 2] != Tileset.WALL;
+            return input[x][y - 1] != TilesetRemote.WALL && input[x + 1][y] != TilesetRemote.WALL && input[x + 1][y - 1] != TilesetRemote.WALL && input[x + 1][y - 2] != TilesetRemote.WALL;
         } else if (x == avatarX + 2 && y == avatarY + 2) {
-            return input[x][y - 1] != Tileset.WALL && input[x - 1][y] != Tileset.WALL && input[x - 1][y - 1] != Tileset.WALL && input[x - 1][y - 2] != Tileset.WALL;
+            return input[x][y - 1] != TilesetRemote.WALL && input[x - 1][y] != TilesetRemote.WALL && input[x - 1][y - 1] != TilesetRemote.WALL && input[x - 1][y - 2] != TilesetRemote.WALL;
         } else if (x == avatarX - 2 && y == avatarY - 2) {
-            return input[x][y + 1] != Tileset.WALL && input[x + 1][y] != Tileset.WALL && input[x + 1][y - 1] != Tileset.WALL && input[x + 1][y - 2] != Tileset.WALL;
+            return input[x][y + 1] != TilesetRemote.WALL && input[x + 1][y] != TilesetRemote.WALL && input[x + 1][y - 1] != TilesetRemote.WALL && input[x + 1][y - 2] != TilesetRemote.WALL;
         } else if (x == avatarX + 2 && y == avatarY - 2) {
-            return input[x][y - 1] != Tileset.WALL && input[x - 1][y] != Tileset.WALL && input[x - 1][y - 1] != Tileset.WALL && input[x - 1][y - 2] != Tileset.WALL;
+            return input[x][y - 1] != TilesetRemote.WALL && input[x - 1][y] != TilesetRemote.WALL && input[x - 1][y - 1] != TilesetRemote.WALL && input[x - 1][y - 2] != TilesetRemote.WALL;
         }
         return true;
     }

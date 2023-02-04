@@ -1,11 +1,11 @@
-package byow.TileEngine;
+package byow.TileEngineRemote;
 
 import java.awt.Color;
 import java.util.Arrays;
 import java.util.Random;
 
-import edu.princeton.cs.algs4.StdDraw;
-//import edu.princeton.cs.introcs.StdDraw;
+//import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.introcs.StdDraw;
 import byow.Core.RandomUtils;
 
 /**
@@ -22,7 +22,7 @@ import byow.Core.RandomUtils;
  * to make your TETile class mutable, if you prefer.
  */
 
-public class TETile {
+public class TETileRemote {
     private final char character; // Do not rename character or the autograder will break.
     private final Color textColor;
     private final Color backgroundColor;
@@ -37,7 +37,7 @@ public class TETile {
      * @param description The description of the tile, shown in the GUI on hovering over the tile.
      * @param filepath Full path to image to be used for this tile. Must be correct size (16x16)
      */
-    public TETile(char character, Color textColor, Color backgroundColor, String description,
+    public TETileRemote(char character, Color textColor, Color backgroundColor, String description,
                   String filepath) {
         this.character = character;
         this.textColor = textColor;
@@ -54,7 +54,7 @@ public class TETile {
      * @param backgroundColor The color drawn behind the character.
      * @param description The description of the tile, shown in the GUI on hovering over the tile.
      */
-    public TETile(char character, Color textColor, Color backgroundColor, String description) {
+    public TETileRemote(char character, Color textColor, Color backgroundColor, String description) {
         this.character = character;
         this.textColor = textColor;
         this.backgroundColor = backgroundColor;
@@ -67,7 +67,7 @@ public class TETile {
      * @param t tile to copy
      * @param textColor foreground color for tile copy
      */
-    public TETile(TETile t, Color textColor) {
+    public TETileRemote(TETileRemote t, Color textColor) {
         this(t.character, textColor, t.backgroundColor, t.description, t.filepath);
     }
 
@@ -125,7 +125,7 @@ public class TETile {
      * @param db the maximum difference in blue value
      * @param r the random number generator to use
      */
-    public static TETile colorVariant(TETile t, int dr, int dg, int db, Random r) {
+    public static TETileRemote colorVariant(TETileRemote t, int dr, int dg, int db, Random r) {
         Color oldColor = t.textColor;
         int newRed = newColorValue(oldColor.getRed(), dr, r);
         int newGreen = newColorValue(oldColor.getGreen(), dg, r);
@@ -133,7 +133,7 @@ public class TETile {
 
         Color c = new Color(newRed, newGreen, newBlue);
 
-        return new TETile(t, c);
+        return new TETileRemote(t, c);
     }
 
     private static int newColorValue(int v, int dv, Random r) {
@@ -153,7 +153,7 @@ public class TETile {
      * @param world the 2D world to print
      * @return string representation of the world
      */
-    public static String toString(TETile[][] world) {
+    public static String toString(TETileRemote[][] world) {
         int width = world.length;
         int height = world[0].length;
         StringBuilder sb = new StringBuilder();
@@ -175,15 +175,15 @@ public class TETile {
      * Makes a copy of the given 2D tile array.
      * @param tiles the 2D array to copy
      **/
-    public static TETile[][] copyOf(TETile[][] tiles) {
+    public static TETileRemote[][] copyOf(TETileRemote[][] tiles) {
         if (tiles == null) {
             return null;
         }
 
-        TETile[][] copy = new TETile[tiles.length][];
+        TETileRemote[][] copy = new TETileRemote[tiles.length][];
 
         int i = 0;
-        for (TETile[] column : tiles) {
+        for (TETileRemote[] column : tiles) {
             copy[i] = Arrays.copyOf(column, column.length);
             i += 1;
         }

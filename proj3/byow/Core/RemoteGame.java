@@ -1,9 +1,8 @@
 package byow.Core;
-import byow.InputDemo.InputSource;
 import byow.Networking.BYOWServer;
-import byow.TileEngine.TERenderer;
-import byow.TileEngine.TETile;
-import byow.TileEngine.Tileset;
+import byow.TileEngineRemote.TERendererRemote;
+import byow.TileEngineRemote.TETileRemote;
+import byow.TileEngineRemote.TilesetRemote;
 import edu.princeton.cs.introcs.StdDraw;
 import java.awt.Color;
 import java.awt.Font;
@@ -18,7 +17,7 @@ import static byow.Core.Engine.HEIGHT;
 import static byow.Core.Engine.WIDTH;
 public class RemoteGame {
     private int width;
-    private TETile[][] world;
+    private TETileRemote[][] world;
     /** The height of the window of this game. */
     private int height;
 
@@ -31,14 +30,13 @@ public class RemoteGame {
 
     private boolean inGame;
 
-    private InputSource inputSource;
 
-    private TERenderer ter;
+    private TERendererRemote ter;
 
     private long SEED;
     private boolean toChangeName;
 
-    private Map map;
+    private MapRemote map;
     private boolean isBlocked;
     private String AvatarName;
 
@@ -65,6 +63,7 @@ public class RemoteGame {
     private int NumHammer;
     private int health;
     private int avatarSelector;
+
     public RemoteGame() {
         this.width = 60;
         this.height = 45;
@@ -77,7 +76,7 @@ public class RemoteGame {
         this.readySave = false;
         this.inGame = false;
         this.AvatarName = "";
-        this.ter = new TERenderer();
+        this.ter = new TERendererRemote();
         this.keys = "";
         this.NumRooms = 0;
         this.hasHammer = false;
@@ -122,7 +121,7 @@ public class RemoteGame {
                     isSubMenu = false;
                     this.isMenu = false;
                     this.inGame = true;
-                    map = new Map(SEED, this.NumRooms, this.setRoom, this.MapHeight, this.setHeight, this.MapWidth, this.setWidth, this.hasHammer, this.WinOrLose, this.avatarSelector);
+                    map = new MapRemote(SEED, this.NumRooms, this.setRoom, this.MapHeight, this.setHeight, this.MapWidth, this.setWidth, this.hasHammer, this.WinOrLose, this.avatarSelector);
                     world = map.MapGenerator();
                     if (toChangeName) {
                         map.ChangeName(AvatarName);
@@ -146,8 +145,8 @@ public class RemoteGame {
                 else if (!isSubMenu && (command == 'S'|| command == 's')) {
                     this.isSubMenu = true;
                     DrawSetting(Server);
-                    while(inputSource.possibleNextInput()) {
-                        char choice = inputSource.getNextKey();
+                    while(Server.clientHasKeyTyped()) {
+                        char choice = Server.clientNextKeyTyped();
                         if (choice == '1') {
                             this.isSubSubMenu = true;
                             this.isSubMenu = false;
@@ -271,15 +270,15 @@ public class RemoteGame {
                 } else if (!isSubMenu && (command == 'A'||command == 'a')){
                     this.isSubMenu = true;
                     DrawAvatar(Server);
-                    while(inputSource.possibleNextInput()) {
-                        char selector = inputSource.getNextKey();
+                    while(Server.clientHasKeyTyped()) {
+                        char selector = Server.clientNextKeyTyped();
                         if (selector == '1') {
                             this.isSubSubMenu = true;
                             this.isSubMenu = false;
                             NameInput(Server, this.AvatarName);
                             AvatarName = "";
-                            while(inputSource.possibleNextInput()) {
-                                char name = inputSource.getNextKey();
+                            while(Server.clientHasKeyTyped()) {
+                                char name = Server.clientNextKeyTyped();
                                 if (name != '/') {
                                     AvatarName += Character.toLowerCase(name) ;
                                     NameInput(Server, AvatarName);
@@ -293,8 +292,8 @@ public class RemoteGame {
                             this.isSubSubMenu = true;
                             this.isSubMenu = false;
                             DrawAvatarAppearence(Server,String.valueOf(this.avatarSelector));
-                            while(inputSource.possibleNextInput()) {
-                                char c = inputSource.getNextKey();
+                            while(Server.clientHasKeyTyped()) {
+                                char c = Server.clientNextKeyTyped();
                                 if (c == '1') {
                                     this.avatarSelector = 1;
                                     DrawAvatarAppearence(Server,String.valueOf(this.avatarSelector));
@@ -332,7 +331,7 @@ public class RemoteGame {
                     isSubMenu = false;
                     this.isMenu = false;
                     this.inGame = true;
-                    map = new Map(SEED, this.NumRooms, this.setRoom, this.MapHeight, this.setHeight, this.MapWidth, this.setWidth, this.hasHammer, this.WinOrLose, this.avatarSelector);
+                    map = new MapRemote(SEED, this.NumRooms, this.setRoom, this.MapHeight, this.setHeight, this.MapWidth, this.setWidth, this.hasHammer, this.WinOrLose, this.avatarSelector);
                     world = map.MapGenerator();
                     if (toChangeName) {
                         map.ChangeName(AvatarName);
@@ -357,15 +356,15 @@ public class RemoteGame {
                 if (isMoveCommand(command)) {
                     this.keys += command;
                     move(command);
-                    if(!map.isActive() && world[map.PX1()][map.PY1()] != Tileset.ClOSE_PORTAL) {
-                        world[map.PX1()][map.PY1()] = Tileset.ClOSE_PORTAL;
-                        world[map.PX2()][map.PY2()] = Tileset.ClOSE_PORTAL;
+                    if(!map.isActive() && world[map.PX1()][map.PY1()] != TilesetRemote.ClOSE_PORTAL) {
+                        world[map.PX1()][map.PY1()] = TilesetRemote.ClOSE_PORTAL;
+                        world[map.PX2()][map.PY2()] = TilesetRemote.ClOSE_PORTAL;
                         this.LenAtTranported = keys.length();
                     }
                     this.NumHammer = map.NumHammer();
                     if (keys.length() >= (LenAtTranported + 5) && !map.isActive()) {
-                        world[map.PX1()][map.PY1()] = Tileset.OPENED_PORTAL;
-                        world[map.PX2()][map.PY2()] = Tileset.OPENED_PORTAL;
+                        world[map.PX1()][map.PY1()] = TilesetRemote.OPENED_PORTAL;
+                        world[map.PX2()][map.PY2()] = TilesetRemote.OPENED_PORTAL;
                         map.toActive();
                         this.LenAtTranported = 0;
                     }
@@ -480,13 +479,12 @@ public class RemoteGame {
         Server.sendCanvas();
     }
 
-    public void HUD(BYOWServer Server, TETile[][] input) {
+    public void HUD(BYOWServer Server, TETileRemote[][] input) {
         //StdDraw.clear(Color.BLACK);
         StdDraw.setPenColor(Color.WHITE);
         Font fontSmall = new Font("Monaco", Font.PLAIN, 20);
         StdDraw.setFont(fontSmall);
         StdDraw.textLeft(0 ,this.MapHeight + 1, map.AvatarName());
-        StdDraw.textRight(23 ,this.MapHeight + 1, CurrentTime());
         if(!isBlocked) {
             StdDraw.text(27,this.MapHeight + 1, "Go bears!");
 
@@ -497,25 +495,9 @@ public class RemoteGame {
         StdDraw.text(42,this.MapHeight + 1, "Coin: " + this.NumCoin);
         StdDraw.text(53,this.MapHeight + 1, "l:open/close light");
         StdDraw.text(65,this.MapHeight + 1, "health: " + this.health);
-        int MouseX = (int) StdDraw.mouseX();
-        int MouseY = (int) StdDraw.mouseY();
-        if (MouseX >=0 && MouseX < this.MapWidth && MouseY >=0 && MouseY < this.MapHeight) {
-            if (this.FiatLux) {
-                StdDraw.textRight(this.MapWidth ,this.MapHeight + 1, input[MouseX][MouseY].description());
-            } else {
-                if (Math.abs(MouseX - map.AvatarX()) >=4 || Math.abs(MouseY - map.AvatarY()) >=4) {
-                    StdDraw.textRight(this.MapWidth ,this.MapHeight + 1, "???");
-                } else {
-                    StdDraw.textRight(this.MapWidth ,this.MapHeight + 1, input[MouseX][MouseY].description());
-                }
-            }
-
-        } else {
-            StdDraw.textRight(this.MapWidth ,this.MapHeight + 1, "???");
-        }
         StdDraw.line(0,this.MapHeight + 0.5, this.MapWidth + 0.5, this.MapHeight + 0.5);
         StdDraw.show();
-        StdDraw.pause(100);
+        //StdDraw.pause(100);
         Server.sendCanvas();
 
     }
@@ -541,14 +523,6 @@ public class RemoteGame {
         StdDraw.show();
         StdDraw.pause(3000);
         Server.sendCanvas();
-
-
-    }
-
-    public String CurrentTime() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        return dtf.format(now);
     }
 
 
