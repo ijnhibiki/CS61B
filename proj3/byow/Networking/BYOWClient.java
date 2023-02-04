@@ -157,4 +157,20 @@ public class BYOWClient {
         System.out.println("Disconnected from server");
         System.exit(0);
     }
+
+    /*
+    public char getNextKey() {
+        long start = System.currentTimeMillis();
+        while (System.currentTimeMillis() - start < 10) {
+            if (StdDraw.hasNextKeyTyped()) {
+                char c = Character.toUpperCase(StdDraw.nextKeyTyped());
+                if (PRINT_TYPED_KEYS) {
+                    System.out.print(c);
+                }
+                return c;
+            }
+        }
+        return '\0';
+    }
+     */
 }

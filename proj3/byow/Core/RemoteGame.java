@@ -94,33 +94,15 @@ public class RemoteGame {
 
     }
     public void StartGame(BYOWServer Server) {
-
-
-
         StdDraw.setCanvasSize(width * 16, height * 16);
-
         StdDraw.setXscale(0, width);
         StdDraw.setYscale(0, height);
-
-
         StdDraw.clear(Color.BLACK);
-
         StdDraw.enableDoubleBuffering();
         StdDraw.clear(Color.BLACK);
         StdDraw.show();
-
-
         Server.sendCanvasConfig(width * 16,height * 16);
-
-
-
-
-
         DrawMenu(Server);
-
-        Server.sendCanvas();
-        //StdDraw.show();
-
         while(Server.clientHasKeyTyped()) {
             char command = Server.clientNextKeyTyped();
             if (this.isMenu) {
@@ -413,8 +395,6 @@ public class RemoteGame {
 
             }
         }
-        //Server.sendCanvasConfig(width * 16,height * 16);
-        //Server.sendCanvas();
     }
 
 
