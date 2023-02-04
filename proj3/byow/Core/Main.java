@@ -19,7 +19,6 @@ public class Main {
             Engine engine = new Engine();
             engine.interactWithRemoteClient(args[1]);
         }
-        // DO NOT CHANGE THESE LINES YET ;)
         else {
             Engine engine = new Engine();
             engine.interactWithKeyboard();

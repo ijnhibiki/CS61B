@@ -496,7 +496,7 @@ public class Map {
         }
         if (n == 4 && accessible(input, AvatarX, AvatarY - 1)) {
             //move down
-            if (input[AvatarX ][AvatarY + 1].equals(Tileset.OPENED_PORTAL)) {
+            if (input[AvatarX ][AvatarY -1].equals(Tileset.OPENED_PORTAL)) {
                 input[AvatarX][AvatarY] = temp;
                 int TargatX = this.PX1;
                 int TargatY = this.PY1;

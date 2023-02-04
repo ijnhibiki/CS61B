@@ -443,7 +443,7 @@ public class RemoteGame {
         }
         StdDraw.text(35,this.MapHeight + 1, "Hammer: " + this.NumHammer);
         StdDraw.text(42,this.MapHeight + 1, "Coin: " + this.NumCoin);
-        StdDraw.text(53,this.MapHeight + 1, "l :open/close light");
+        StdDraw.text(53,this.MapHeight + 1, "l:open/close light");
         StdDraw.text(65,this.MapHeight + 1, "health: " + this.health);
         int MouseX = (int) StdDraw.mouseX();
         int MouseY = (int) StdDraw.mouseY();
@@ -472,7 +472,7 @@ public class RemoteGame {
         StdDraw.setPenColor(Color.WHITE);
         Font fontBig = new Font("Monaco", Font.BOLD, 40);
         StdDraw.setFont(fontBig);
-        StdDraw.text(width / 2, height / 2, "You Win!");
+        StdDraw.text(this.MapWidth / 2, this.MapHeight / 2, "You Win!");
         StdDraw.show();
         StdDraw.pause(3000);
 
@@ -485,7 +485,7 @@ public class RemoteGame {
         StdDraw.setPenColor(Color.WHITE);
         Font fontBig = new Font("Monaco", Font.BOLD, 40);
         StdDraw.setFont(fontBig);
-        StdDraw.text(width / 2, height / 2, "You Lose!");
+        StdDraw.text(this.MapWidth / 2, this.MapHeight / 2, "You Lose!");
         StdDraw.show();
         StdDraw.pause(3000);
         Server.sendCanvas();

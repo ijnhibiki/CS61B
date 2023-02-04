@@ -4,8 +4,7 @@ import byow.Core.Map;
 import byow.Networking.BYOWServer;
 import edu.princeton.cs.algs4.StdDraw;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 
 /**
  * Utility class for rendering tiles. You do not need to modify this file. You're welcome
@@ -117,10 +116,8 @@ public class TERenderer {
                     /*if (world[x][y] == null) {
                         throw new IllegalArgumentException("Tile at position x=" + x + ", y=" + y
                                 + " is null.");
-                    }
-
-                     */
-                    if (lightCheck(world,x,y,AvatarX,AvatarY) && visable(world,x,y)) {
+                    } */
+                    if (lightCheck(world,x,y,AvatarX,AvatarY) && lightCheck2(world,x,y,AvatarX,AvatarY)) {
                         world[x][y].draw(x + xOffset, y + yOffset);
                     }
                 }
@@ -156,8 +153,49 @@ public class TERenderer {
         }
 
     }
-    public boolean visable(TETile[][] world,int x, int y) {
-        return world[x][y] == Tileset.WALL || world[x][y] == Tileset.FLOOR || world[x][y] == Tileset.AVATAR ||world[x][y] == Tileset.HAMMER||world[x][y] == Tileset.COIN;
+
+
+    public boolean lightCheck2(TETile[][] input,int x, int y, int Ax, int Ay) {
+        if (x >= Ax-1 && x<=Ax + 1 && y>=Ay -1 && y <= Ay+1){
+            return true;
+        } else if(y >= Ay + 2 && x>= Ax-1&&x<=Ax+1) {
+            for (int i = y -1; i >Ay; i--) {
+                if(input[x][i] == Tileset.WALL) {
+                    return false;
+                }
+            }
+            return true;
+        } else if(y <= Ay - 2 && x>= Ax-1&&x<=Ax+1) {
+            for (int i = y + 1; i <Ay; i++) {
+                if(input[x][i] == Tileset.WALL) {
+                    return false;
+                }
+            }
+            return true;
+        } else if(x >= Ax + 2 && y>= Ay-1&&y<=Ay+1) {
+            for (int i = x -1; i >Ax; i--) {
+                if(input[i][y] == Tileset.WALL) {
+                    return false;
+                }
+            }
+            return true;
+        } else if(x <= Ax - 2 && y>= Ay-1&&y<=Ay+1){
+            for (int i = x + 1; i <Ax; i++) {
+                if(input[i][y] == Tileset.WALL) {
+                    return false;
+                }
+            }
+            return true;
+        }else if(x == Ax -2 && y ==Ay+2) {
+            return input[x][y - 1] != Tileset.WALL && input[x + 1][y] != Tileset.WALL && input[x + 1][y - 1] != Tileset.WALL && input[x + 1][y - 2] != Tileset.WALL;
+        }else if(x == Ax +2 && y ==Ay+2) {
+            return input[x][y-1] != Tileset.WALL && input[x-1][y] != Tileset.WALL && input[x - 1][y - 1] != Tileset.WALL && input[x - 1][y - 2] != Tileset.WALL;
+        }else if(x == Ax - 2 && y ==Ay - 2){
+            return input[x][y+1] != Tileset.WALL && input[x + 1][y] != Tileset.WALL && input[x+1][y-1] != Tileset.WALL && input[x+1][y-2] != Tileset.WALL;
+        }else if(x == Ax + 2 && y==Ay -2) {
+            return input[x][y-1] != Tileset.WALL && input[x -1][y] != Tileset.WALL && input[x -1][y - 1] != Tileset.WALL && input[x -1][y -2] != Tileset.WALL;
+        }
+        return true;
     }
 
 

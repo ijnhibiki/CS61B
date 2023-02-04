@@ -104,8 +104,8 @@ public class Game {
 
     }
 
-    public TETile[][] StartGame(boolean WithKeyboard, String input) {
-        if (WithKeyboard) {
+    public TETile[][] StartGame(boolean ShowScreen, String input) {
+        if (ShowScreen) {
             StdDraw.setCanvasSize(width * 16, height * 16);
             Font font = new Font("Monaco", Font.BOLD, 30);
             StdDraw.setFont(font);
@@ -123,7 +123,7 @@ public class Game {
             char command = inputSource.getNextKey();
             if (this.isMenu) {
                 if (isSubMenu && (command == 'Q'|| command == 'q')) {
-                    if (WithKeyboard) {
+                    if (ShowScreen) {
                         DrawMenu();
                         this.isSubMenu = false;
                     }
@@ -133,7 +133,7 @@ public class Game {
                     SEED = 0;
                     isSubMenu = true;
                     isSeed = true;
-                    if(WithKeyboard) {
+                    if(ShowScreen) {
                         SeedInput("");
                     }
                 } else if (isSubMenu && (command == 'S'|| command == 's')) {
@@ -155,7 +155,7 @@ public class Game {
                         map.changeHammer(200);
 
                     }
-                    if (WithKeyboard) {
+                    if (ShowScreen) {
                         ter.initialize(this.MapWidth, this.MapHeight + 2, false, null);
                         ter.renderFrame(world, map.AvatarX(), map.AvatarY(), this.FiatLux, false,null);
                         HUD(world);
@@ -176,7 +176,7 @@ public class Game {
                                 if (c != '/') {
                                     if (Character.isDigit(c)) {
                                         temp= temp*10 + Character.getNumericValue(c);
-                                        if(WithKeyboard) {
+                                        if(ShowScreen) {
                                             MapSize(Integer.toString(temp),1);
                                         }
                                     }
@@ -203,7 +203,7 @@ public class Game {
                                 if (c != '/') {
                                     if (Character.isDigit(c)) {
                                         temp = temp *10 + Character.getNumericValue(c);
-                                        if(WithKeyboard) {
+                                        if(ShowScreen) {
                                             MapSize(Integer.toString(temp),2);
                                         }
                                     }
@@ -230,7 +230,7 @@ public class Game {
                                 if (c != '/') {
                                     if (Character.isDigit(c)) {
                                         this.NumRooms = this.NumRooms *10 + Character.getNumericValue(c);
-                                        if(WithKeyboard) {
+                                        if(ShowScreen) {
                                             NumRoom(Integer.toString(this.NumRooms));
                                         }
                                     }
@@ -326,7 +326,7 @@ public class Game {
                     for (int i = 0; i < this.keys.length(); i++) {
                         move(this.keys.charAt(i));
                     }
-                    if (WithKeyboard) {
+                    if (ShowScreen) {
                         ter.initialize(this.MapWidth, this.MapHeight + 2, false,null);
                         ter.renderFrame(world, map.AvatarX(), map.AvatarY(), this.FiatLux, false,null);
                         HUD(world);
@@ -336,7 +336,7 @@ public class Game {
                 else if (isSeed){
                     if (Character.isDigit(command)) {
                         SEED = SEED*10 + Character.getNumericValue(command);
-                        if(WithKeyboard) {
+                        if(ShowScreen) {
                             SeedInput(Long.toString(SEED));
                         }
                     }
@@ -374,7 +374,7 @@ public class Game {
                 this.NumCoin = map.NumCoin();
                 this.health = map.HP();
 
-                if (WithKeyboard) {
+                if (ShowScreen) {
                     ter.renderFrame(world, map.AvatarX(), map.AvatarY(), this.FiatLux, false,null);
                     HUD(world);
                 }
@@ -479,7 +479,7 @@ public class Game {
         StdDraw.setPenColor(Color.WHITE);
         Font fontBig = new Font("Monaco", Font.BOLD, 40);
         StdDraw.setFont(fontBig);
-        StdDraw.text(width / 2, height / 2, "You Win!");
+        StdDraw.text(this.MapWidth / 2, this.MapHeight / 2, "You Win!");
         StdDraw.show();
         StdDraw.pause(3000);
 
@@ -489,7 +489,7 @@ public class Game {
         StdDraw.setPenColor(Color.WHITE);
         Font fontBig = new Font("Monaco", Font.BOLD, 40);
         StdDraw.setFont(fontBig);
-        StdDraw.text(width / 2, height / 2, "You Lose!");
+        StdDraw.text(this.MapWidth / 2, this.MapHeight / 2, "You Lose!");
         StdDraw.show();
         StdDraw.pause(3000);
 
