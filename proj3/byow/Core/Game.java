@@ -151,8 +151,10 @@ public class Game {
                     }
                     if (this.SEED == 247) {
                         avatarName = "Berkelium";
+                        this.toChangeName = true;
                         map.ChangeName(avatarName);
                         this.numHammer = 200;
+                        this.hasHammer = true;
                         map.changeHammer(200);
 
                     }
@@ -360,9 +362,45 @@ public class Game {
                     if (toChangeName) {
                         map.ChangeName(avatarName);
                     }
+                    if (hasHammer) {
+                        map.changeHammer(this.numHammer);
+                    }
+                    if (this.SEED == 247) {
+                        avatarName = "Berkelium";
+                        this.toChangeName = true;
+                        map.ChangeName(avatarName);
+                        this.numHammer = 200;
+                        this.hasHammer = true;
+                        map.changeHammer(200);
+
+                    }
                     for (int i = 0; i < this.keys.length(); i++) {
                         move(this.keys.charAt(i));
+                        if(!map.isActive() && world[map.PX1()][map.PY1()] != Tileset.ClOSE_PORTAL) {
+                            world[map.PX1()][map.PY1()] = Tileset.ClOSE_PORTAL;
+                            world[map.PX2()][map.PY2()] = Tileset.ClOSE_PORTAL;
+                            this.lenAtTranported = keys.length();
+                        }
+                        this.numHammer = map.NumHammer();
+                        if (keys.length() >= (lenAtTranported + 5) && !map.isActive()) {
+                            world[map.PX1()][map.PY1()] = Tileset.OPENED_PORTAL;
+                            world[map.PX2()][map.PY2()] = Tileset.OPENED_PORTAL;
+                            map.toActive();
+                            this.lenAtTranported = 0;
+                        }
+                        this.numCoin = map.NumCoin();
+                        this.health = map.HP();
+                        if (this.health == 0) {
+                            lose();
+                            System.exit(0);
+                        }
+                        if(this.numCoin == 7) {
+                            win();
+                            System.exit(0);
+                        }
+
                     }
+
                     if (showScreen) {
                         ter.initialize(this.mapWidth, this.mapHeight + 2, false,null);
                         ter.renderFrame(world, map.AvatarX(), map.AvatarY(), this.fiatLux, false,null);
@@ -622,6 +660,7 @@ public class Game {
             PrintWriter writer = new PrintWriter("save.txt", StandardCharsets.UTF_8);
             writer.println(this.SEED);
             writer.println(this.keys);
+            writer.println(this.toChangeName);
             writer.println(this.avatarName);
             writer.println(this.setWidth);
             writer.println(this.mapWidth);
@@ -650,6 +689,7 @@ public class Game {
             Scanner myReader = new Scanner(save);
             this.SEED = Long.parseLong(myReader.nextLine());
             this.keys = myReader.nextLine();
+            this.toChangeName = Boolean.parseBoolean(myReader.nextLine());
             this.avatarName = myReader.nextLine();
             this.setWidth = Boolean.parseBoolean(myReader.nextLine());
             this.mapWidth = Integer.parseInt(myReader.nextLine());
